@@ -1,8 +1,8 @@
+import { BaseUserInfo } from '@core/common';
+import { getDiceBearAvatar } from '@core/utils/dicebear';
+import { getInitials } from '@core/utils/get-initials';
 import { Avatar, Box, Link, Typography, styled } from '@mui/material';
 import { ColumnShape } from 'react-base-table';
-import { BaseUserInfo } from '../../../core/users';
-import { getDiceBearAvatar } from '../../../core/utils/dicebear';
-import { getInitials } from '../../../core/utils/get-initials';
 
 type Props = {
   link: (id: number) => string;
