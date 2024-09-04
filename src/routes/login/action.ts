@@ -28,5 +28,5 @@ export const loginAction = async ({ request }: LoaderFunctionArgs) => {
   }
 
   const redirectTo = formData.get('redirectTo') as string | null;
-  return redirect(redirectTo || '/admin');
+  return redirect(redirectTo || '/');
 };

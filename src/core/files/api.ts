@@ -18,8 +18,11 @@ const fileUploadOnDrop = async ({ file, onUploadProgress }: ParamsConfig) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  let axTarget: (url: string, data?: FormData, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<FileInfo>> =
-    AXPOSTER.post<FileInfo>;
+  const axTarget: (
+    url: string,
+    data?: FormData,
+    config?: AxiosRequestConfig | undefined,
+  ) => Promise<AxiosResponse<FileInfo>> = AXPOSTER.post<FileInfo>;
 
   const { data } = await axTarget(`/admin/api/filestorage/upload`, formData, {
     headers: {
