@@ -1,4 +1,5 @@
 import { LS, LSKeys } from '@core/local-store';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
@@ -22,7 +23,6 @@ import { useState } from 'react';
 import { LoaderFunctionArgs, Outlet, redirect, useFetcher } from 'react-router-dom';
 import { $token } from '../core/login/store';
 import { $snacks, closeSnack } from '../core/snacks/store';
-
 export const Component = () => {
   const [open, setOpen] = useState(false);
   const hasToken = !!useUnit($token);
@@ -70,6 +70,16 @@ export const Component = () => {
                       <HomeIcon />
                     </ListItemIcon>
                     <ListItemText primary="Главная" />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+              <Link href="/accounts" sx={{ textDecoration: 'none', color: 'MenuText' }}>
+                <ListItem disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <AccountBoxIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Акки" />
                   </ListItemButton>
                 </ListItem>
               </Link>

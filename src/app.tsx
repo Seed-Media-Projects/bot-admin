@@ -13,6 +13,10 @@ const router = createBrowserRouter([
         path: '',
         lazy: () => import('@routes/home'),
       },
+      {
+        path: 'accounts',
+        lazy: () => import('@routes/accounts'),
+      },
     ],
   },
   {
