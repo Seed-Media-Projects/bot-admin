@@ -23,6 +23,9 @@ import { useState } from 'react';
 import { LoaderFunctionArgs, Outlet, redirect, useFetcher } from 'react-router-dom';
 import { $token } from '../core/login/store';
 import { $snacks, closeSnack } from '../core/snacks/store';
+
+import GroupsIcon from '@mui/icons-material/Groups';
+
 export const Component = () => {
   const [open, setOpen] = useState(false);
   const hasToken = !!useUnit($token);
@@ -80,6 +83,16 @@ export const Component = () => {
                       <AccountBoxIcon />
                     </ListItemIcon>
                     <ListItemText primary="Акки" />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+              <Link href="/groups" sx={{ textDecoration: 'none', color: 'MenuText' }}>
+                <ListItem disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <GroupsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Группы" />
                   </ListItemButton>
                 </ListItem>
               </Link>

@@ -17,6 +17,14 @@ const router = createBrowserRouter([
         path: 'accounts',
         lazy: () => import('@routes/accounts'),
       },
+      {
+        path: 'groups',
+        lazy: () => import('@routes/groups'),
+      },
+      {
+        path: 'groups/connect',
+        lazy: () => import('@routes/groups/connect'),
+      },
     ],
   },
   {
