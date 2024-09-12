@@ -1,6 +1,8 @@
 import { LS, LSKeys } from '@core/local-store';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import GroupsIcon from '@mui/icons-material/Groups';
 import HomeIcon from '@mui/icons-material/Home';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
   Alert,
@@ -23,8 +25,6 @@ import { useState } from 'react';
 import { LoaderFunctionArgs, Outlet, redirect, useFetcher } from 'react-router-dom';
 import { $token } from '../core/login/store';
 import { $snacks, closeSnack } from '../core/snacks/store';
-
-import GroupsIcon from '@mui/icons-material/Groups';
 
 export const Component = () => {
   const [open, setOpen] = useState(false);
@@ -93,6 +93,16 @@ export const Component = () => {
                       <GroupsIcon />
                     </ListItemIcon>
                     <ListItemText primary="Группы" />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+              <Link href="/group-packs" sx={{ textDecoration: 'none', color: 'MenuText' }}>
+                <ListItem disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <InventoryIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Паки" />
                   </ListItemButton>
                 </ListItem>
               </Link>
