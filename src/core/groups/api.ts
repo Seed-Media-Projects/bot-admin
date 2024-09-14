@@ -17,6 +17,6 @@ export const connectGroupsFX = createEffect(async ({ groups, userId }: { groups:
   await AXPOSTER.post(`/admin/api/groups/${userId}`, { groups });
 });
 
-export const deleteGroupFX = createEffect(async (groupId: number) => {
+export const deleteGroupFX = createEffect(async (groupId: string) => {
   await AXPOSTER.delete(`/admin/api/groups/${groupId}`);
 });

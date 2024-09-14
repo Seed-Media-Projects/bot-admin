@@ -37,6 +37,10 @@ const router = createBrowserRouter([
         path: 'group-packs/:id',
         lazy: () => import('@routes/group-packs/edit'),
       },
+      {
+        path: 'posts',
+        lazy: () => import('@routes/posts'),
+      },
     ],
   },
   {
