@@ -1,5 +1,4 @@
 import { deleteGroupPackFX, GroupPackItem } from '@core/group-packs';
-import { deleteGroupFX } from '@core/groups';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton } from '@mui/material';
@@ -57,7 +56,7 @@ const Actions = ({ groupPack }: { groupPack: GroupPackItem }) => {
             loading={loading}
             onClose={handleClose}
             onConfirm={() => {
-              deleteGroupFX(groupPack.id).then(() => {
+              deleteGroupPackFX(groupPack.id).then(() => {
                 handleClose();
                 navigate('.', { replace: true });
               });

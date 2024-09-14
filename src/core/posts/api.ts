@@ -7,7 +7,7 @@ export const getPostPacksFX = createEffect(async () => {
 
   return data;
 });
-export const getPostPackFX = createEffect(async (id: number) => {
+export const getPostPackFX = createEffect(async (id: string) => {
   const { data } = await AXPOSTER.get<VkPostPackDetailResponse>(`/admin/api/posts/${id}`);
 
   return data;
@@ -17,6 +17,6 @@ export const createPostPackFX = createEffect(async (payload: CreatePostDto) => {
   await AXPOSTER.post(`/admin/api/posts`, payload);
 });
 
-export const deletePostPackFX = createEffect(async (id: number) => {
+export const deletePostPackFX = createEffect(async (id: string) => {
   await AXPOSTER.delete(`/admin/api/posts/${id}`);
 });

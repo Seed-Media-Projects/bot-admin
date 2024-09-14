@@ -1,5 +1,5 @@
 import { GroupPackItem } from '@core/group-packs';
-import { deleteGroupFX, VkGroupItem } from '@core/groups';
+import { VkGroupItem } from '@core/groups';
 import { deletePostPackFX, VkPostPackItem } from '@core/posts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -145,7 +145,7 @@ const Actions = ({ postPack }: { postPack: VkPostPackItem }) => {
             loading={loading}
             onClose={handleClose}
             onConfirm={() => {
-              deleteGroupFX(postPack.id).then(() => {
+              deletePostPackFX(postPack.id).then(() => {
                 handleClose();
                 navigate('.', { replace: true });
               });
