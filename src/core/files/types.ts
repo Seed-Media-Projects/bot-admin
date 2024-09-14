@@ -1,6 +1,7 @@
 export type FileInfo = {
   id: number;
   url: string;
+  fileType: 'img' | 'video';
 };
 
 export type BaseFileInfo = {

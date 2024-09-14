@@ -30,7 +30,7 @@ import { $snacks, closeSnack } from '../core/snacks/store';
 export const Component = () => {
   const [open, setOpen] = useState(false);
   const hasToken = !!useUnit($token);
-  const snacksStore = useUnit($snacks);
+  const { snacks } = useUnit($snacks);
   const fetcher = useFetcher();
 
   const openMenu = () => {
@@ -124,11 +124,18 @@ export const Component = () => {
       <Box sx={{ padding: 2 }}>
         <Outlet />
       </Box>
-      <Snackbar open={snacksStore.open} autoHideDuration={6000} onClose={() => closeSnack()} message={snacksStore.message}>
-        <Alert onClose={() => closeSnack()} severity={snacksStore.severity} variant="filled" sx={{ width: '100%' }}>
-          {snacksStore.message}
-        </Alert>
-      </Snackbar>
+      {snacks.map(snack => (
+        <Snackbar open autoHideDuration={6000} onClose={() => closeSnack({ id: snack.id })} message={snack.message}>
+          <Alert
+            onClose={() => closeSnack({ id: snack.id })}
+            severity={snack.severity}
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            {snack.message}
+          </Alert>
+        </Snackbar>
+      ))}
     </>
   );
 };

@@ -9,7 +9,23 @@ const oneMB = 1048576;
 
 export const useUploader = ({ onFinishUpload }: { onFinishUpload: (f: FileInfo) => void }) => {
   const loading = useUnit(uploadFileFX.pending);
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState<Record<string, number>>({});
+
+  const uploadFn = async (file: File) => {
+    const data = await uploadFileFX({
+      file,
+      onUploadProgress: p => {
+        setProgress({
+          ...progress,
+          [file.name]: Math.round((p.loaded * 100) / (p.total ?? 0)),
+        });
+      },
+    });
+    const prgs = progress;
+    delete prgs[file.name];
+    setProgress(prgs);
+    onFinishUpload(data);
+  };
 
   const { open, getInputProps } = useDropzone({
     accept: {
@@ -19,32 +35,33 @@ export const useUploader = ({ onFinishUpload }: { onFinishUpload: (f: FileInfo) 
       'image/jpg': [],
       'image/gif': [],
       'image/svg+xml': [],
+      'video/mp4': [],
     },
-    maxSize: oneMB * 10,
+    maxSize: oneMB * 50,
     disabled: loading,
-    maxFiles: 1,
-    onDrop: (acceptedFiles: File[]) => {
-      acceptedFiles.forEach(async file => {
-        const data = await uploadFileFX({
-          file,
-          onUploadProgress: p => {
-            setProgress(Math.round((p.loaded * 100) / (p.total ?? 0)));
-          },
+    maxFiles: 10,
+    onDrop: async (acceptedFiles: File[]) => {
+      try {
+        await Promise.all(acceptedFiles.map(f => uploadFn(f)));
+      } catch (error) {
+        console.error(error);
+        setProgress({});
+        showSnack({
+          severity: 'error',
+          message: 'Не удалось загрузить файлы',
+          id: 'uploaderr',
         });
-        setProgress(0);
-        onFinishUpload(data);
-      });
-    },
-    onDropRejected: e => {
-      let errText = 'Не удалось загрузить файл';
-      if (e?.[0]?.errors?.[0]?.message?.includes('larger')) {
-        errText = 'Файл слишком большой';
       }
-
-      showSnack({
-        severity: 'error',
-        message: errText,
-      });
+    },
+    onDropRejected: fileRejections => {
+      for (const fileRejection of fileRejections) {
+        const joinErr = fileRejection.errors.map(e => e.message).join('. ');
+        showSnack({
+          severity: 'error',
+          message: joinErr,
+          id: fileRejection.file.name,
+        });
+      }
     },
   });
 
