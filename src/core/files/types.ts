@@ -2,6 +2,8 @@ export type FileInfo = {
   id: number;
   url: string;
   fileType: 'img' | 'video';
+  fileName: string;
+  privacyView: 'all' | 'members' | null;
 };
 
 export type BaseFileInfo = {

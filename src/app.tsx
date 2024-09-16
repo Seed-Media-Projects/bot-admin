@@ -45,6 +45,10 @@ const router = createBrowserRouter([
         path: 'posts/create',
         lazy: () => import('@routes/posts/create'),
       },
+      {
+        path: 'posts/:id',
+        lazy: () => import('@routes/posts/edit'),
+      },
     ],
   },
   {

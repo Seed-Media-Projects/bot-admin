@@ -34,9 +34,13 @@ export const tablePostPacksConfig: ColumnShape<VkPostPackItem>[] = [
     cellRenderer: ({ rowData }) => {
       const data = rowData.settings.status;
 
+      if (!postStatusBundle[data]) {
+        return '-';
+      }
+
       const Icon = postStatusBundle[data].icon;
       return (
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
+        <Box sx={{ width: '100%' }}>
           <CustomAvatar color={postStatusBundle[data].color}>
             <Tooltip title={postStatusBundle[data].tooltip ?? ''} placement="top" arrow>
               <Icon />

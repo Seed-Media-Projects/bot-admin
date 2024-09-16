@@ -1,3 +1,4 @@
+import { BaseFileInfo } from '@core/files';
 import { GroupPackDetail } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
 
@@ -14,7 +15,7 @@ export type VkPostSettings = {
 export enum VkPostStatus {
   Scheduled = 'scheduled',
   InProgress = 'in_progess',
-  Success = 'succes',
+  Success = 'success',
   Failed = 'failed',
 }
 
@@ -45,6 +46,15 @@ export type VkPostPackItem = {
   vk_user_group_id: number | null;
 };
 
+export type VkPostFile = {
+  id: string;
+  privacyView: 'all' | 'members' | null;
+  fileType: 'img' | 'video';
+  vk_post_pack_id: string;
+  file_storage_id: number;
+  file: BaseFileInfo;
+};
+
 export type VkPostPackDetail = {
   id: string;
   toAllGroups: boolean;
@@ -57,6 +67,7 @@ export type VkPostPackDetail = {
   deleted: string | null;
   groupPack: GroupPackDetail | null;
   group: VkGroupItem | null;
+  files: VkPostFile[];
 };
 
 export type VkPostPackDetailResponse = {
