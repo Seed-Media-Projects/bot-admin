@@ -1,6 +1,7 @@
 import { AccountItem } from '@core/accounts';
 import { deleteGroupFX, VkGroupItem } from '@core/groups';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, Typography } from '@mui/material';
 import { ActionModal } from '@ui/modal/ActionModal';
 import { actionsConfig, RowOptionsIcons } from '@ui/table/RowOptions';
@@ -57,7 +58,13 @@ const Actions = ({ group }: { group: VkGroupItem }) => {
 
   return (
     <RowOptionsIcons
-      options={[]}
+      options={[
+        {
+          icon: EditIcon,
+          name: 'Edit',
+          link: `/groups/${group.id}`,
+        },
+      ]}
       deleteBtn={
         <>
           <IconButton onClick={handleOpen}>

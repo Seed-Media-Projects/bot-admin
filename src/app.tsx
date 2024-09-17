@@ -26,6 +26,10 @@ const router = createBrowserRouter([
         lazy: () => import('@routes/groups/connect'),
       },
       {
+        path: 'groups/:id',
+        lazy: () => import('@routes/groups/edit'),
+      },
+      {
         path: 'group-packs',
         lazy: () => import('@routes/group-packs'),
       },

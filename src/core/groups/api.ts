@@ -13,6 +13,16 @@ export const getGroupsFX = createEffect(async () => {
 
   return data;
 });
+export const getGroupFX = createEffect(async (id: number) => {
+  const { data } = await AXPOSTER.get<VkGroupItem>(`/admin/api/groups/group/${id}`);
+
+  return data;
+});
+
+export const updateGroupFX = createEffect(async ({ groupId, userId }: { groupId: number; userId: number }) => {
+  await AXPOSTER.put(`/admin/api/groups/${groupId}`, { userId });
+});
+
 export const connectGroupsFX = createEffect(async ({ groups, userId }: { groups: AvailableGroupItem[]; userId: number }) => {
   await AXPOSTER.post(`/admin/api/groups/${userId}`, { groups });
 });
