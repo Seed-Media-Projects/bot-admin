@@ -1,7 +1,7 @@
 import { FileInfo, useUploader } from '@core/files';
 import { getGroupPackFX, GroupPackDetail, GroupPackItem } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
-import { IntervalObj, IntervalTypes, VkPostPackDetailResponse } from '@core/posts';
+import { IntervalObj, IntervalTypes, VkPostPackDetailResponse, VkPostStatus } from '@core/posts';
 import { objKeys } from '@core/utils/mappings';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
@@ -14,12 +14,14 @@ import {
   MenuItem,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
+import { CustomAvatar } from '@ui/table/config-elements';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useLoaderData } from 'react-router-dom';
-import { intervalTypeOptions, postTargetOptions, privacyViewOptions } from '../constants';
+import { intervalTypeOptions, postStatusBundle, postTargetOptions, privacyViewOptions } from '../constants';
 import { editPostPackLoader } from './loader';
 
 const getValuesFromInterval = ({ hours, minutes, seconds }: IntervalObj) => {
@@ -120,7 +122,6 @@ const EditPostPackPage = () => {
         marginTop: 8,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
         maxWidth: 500,
         margin: 'auto',
       }}
@@ -128,6 +129,29 @@ const EditPostPackPage = () => {
       <Typography variant="h5" gutterBottom>
         Инфо поста
       </Typography>
+      <Typography variant="h6" gutterBottom>
+        Статусы
+      </Typography>
+      <Box my={2}>
+        {objKeys(postData.post.settings.groupPostStatus).map(gpk => {
+          const { status, error } = postData.post.settings.groupPostStatus[gpk];
+
+          const fixStatus = (status as unknown as string) === 'succes' ? VkPostStatus.Success : status;
+
+          const Icon = postStatusBundle[fixStatus].icon;
+
+          return (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography>{groups.find(g => g.id === Number(gpk))?.name}</Typography>
+              <CustomAvatar color={postStatusBundle[fixStatus].color}>
+                <Tooltip title={error ?? postStatusBundle[fixStatus].tooltip ?? ''} placement="top" arrow>
+                  <Icon />
+                </Tooltip>
+              </CustomAvatar>
+            </Box>
+          );
+        })}
+      </Box>
       <Form method="post" style={{ width: '100%' }}>
         <TextField
           margin="normal"
@@ -524,6 +548,31 @@ const EditPostPackPage = () => {
             <Typography variant="h5" sx={{ my: 2 }}>
               Автоподмена поста
             </Typography>
+            <Typography variant="h6" gutterBottom>
+              Статусы
+            </Typography>
+            <Box my={2}>
+              {objKeys(postData.replacementPost?.settings.groupPostStatus ?? {}).map(gpk => {
+                const { status, error } = postData.replacementPost?.settings.groupPostStatus?.[gpk] ?? {
+                  status: VkPostStatus.Success,
+                };
+
+                const fixStatus = (status as unknown as string) === 'succes' ? VkPostStatus.Success : status;
+
+                const Icon = postStatusBundle[fixStatus].icon;
+
+                return (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography>{groups.find(g => g.id === Number(gpk))?.name}</Typography>
+                    <CustomAvatar color={postStatusBundle[fixStatus].color}>
+                      <Tooltip title={error ?? postStatusBundle[fixStatus].tooltip ?? ''} placement="top" arrow>
+                        <Icon />
+                      </Tooltip>
+                    </CustomAvatar>
+                  </Box>
+                );
+              })}
+            </Box>
             {postTarget !== 'group' ? (
               <FormGroup>
                 <FormControlLabel
