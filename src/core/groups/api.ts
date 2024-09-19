@@ -8,8 +8,12 @@ export const getAvailableGroupsFX = createEffect(async (userId: number) => {
   return data;
 });
 
-export const getGroupsFX = createEffect(async () => {
-  const { data } = await AXPOSTER.get<VkGroupItem[]>(`/admin/api/groups`);
+export const getGroupsFX = createEffect(async (search?: string) => {
+  const { data } = await AXPOSTER.get<VkGroupItem[]>(`/admin/api/groups`, {
+    params: {
+      search,
+    },
+  });
 
   return data;
 });
