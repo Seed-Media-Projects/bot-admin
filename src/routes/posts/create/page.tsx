@@ -124,7 +124,6 @@ const CreatePostPackPage = () => {
                 margin="normal"
                 multiline
                 rows={4}
-                required
                 fullWidth
                 label={`Подпись для ${g.group.name}`}
                 name={`groupsText_${g.group.id}`}
@@ -138,7 +137,6 @@ const CreatePostPackPage = () => {
                 margin="normal"
                 multiline
                 rows={4}
-                required
                 fullWidth
                 label={`Подпись для ${g.name}`}
                 name={`groupsText_${g.id}`}
@@ -150,7 +148,6 @@ const CreatePostPackPage = () => {
               margin="normal"
               multiline
               rows={4}
-              required
               fullWidth
               label={`Подпись для группы`}
               name="allGroupsText"
@@ -162,7 +159,6 @@ const CreatePostPackPage = () => {
             margin="normal"
             multiline
             rows={4}
-            required
             fullWidth
             label={`Подпись для всех групп`}
             name="allGroupsText"
@@ -349,7 +345,6 @@ const CreatePostPackPage = () => {
                     margin="normal"
                     multiline
                     rows={4}
-                    required
                     fullWidth
                     label={`Подпись для ${g.group.name}`}
                     name={`replaceItemPost.groupsText_${g.group.id}`}
@@ -363,7 +358,6 @@ const CreatePostPackPage = () => {
                     margin="normal"
                     multiline
                     rows={4}
-                    required
                     fullWidth
                     label={`Подпись для ${g.name}`}
                     name={`replaceItemPost.groupsText_${g.id}`}
@@ -375,7 +369,6 @@ const CreatePostPackPage = () => {
                   margin="normal"
                   multiline
                   rows={4}
-                  required
                   fullWidth
                   label={`Подпись для группы`}
                   name="replaceItemPost.allGroupsText"
@@ -387,7 +380,6 @@ const CreatePostPackPage = () => {
                 margin="normal"
                 multiline
                 rows={4}
-                required
                 fullWidth
                 label={`Подпись для всех групп`}
                 name="replaceItemPost.allGroupsText"
