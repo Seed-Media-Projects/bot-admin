@@ -42,6 +42,18 @@ const router = createBrowserRouter([
         lazy: () => import('@routes/group-packs/edit'),
       },
       {
+        path: 'stories',
+        lazy: () => import('@routes/stories'),
+      },
+      {
+        path: 'stories/create',
+        lazy: () => import('@routes/stories/create'),
+      },
+      {
+        path: 'stories/:id',
+        lazy: () => import('@routes/stories/edit'),
+      },
+      {
         path: 'posts',
         lazy: () => import('@routes/posts'),
       },

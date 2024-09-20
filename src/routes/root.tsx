@@ -5,6 +5,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import HomeIcon from '@mui/icons-material/Home';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import MenuIcon from '@mui/icons-material/Menu';
+import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import {
   Alert,
   AppBar,
@@ -114,6 +115,16 @@ export const Component = () => {
                       <DynamicFeedIcon />
                     </ListItemIcon>
                     <ListItemText primary="Посты" />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+              <Link href="/stories" sx={{ textDecoration: 'none', color: 'MenuText' }}>
+                <ListItem disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <PhoneIphoneIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Сторисы" />
                   </ListItemButton>
                 </ListItem>
               </Link>

@@ -1,7 +1,7 @@
 import { FileInfo, useUploader } from '@core/files';
 import { getGroupPackFX, GroupPackDetail, GroupPackItem } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
-import { IntervalObj, IntervalTypes, VkPostPackDetailResponse, VkPostStatus } from '@core/posts';
+import { VkPostPackDetailResponse, VkPostStatus } from '@core/posts';
 import { objKeys } from '@core/utils/mappings';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
@@ -22,33 +22,8 @@ import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useLoaderData } from 'react-router-dom';
 import { intervalTypeOptions, postStatusBundle, postTargetOptions, privacyViewOptions } from '../constants';
+import { getValuesFromInterval } from '../utils';
 import { editPostPackLoader } from './loader';
-
-const getValuesFromInterval = ({ hours, minutes, seconds }: IntervalObj) => {
-  if (seconds) {
-    return {
-      value: seconds,
-      type: IntervalTypes.Seconds,
-    };
-  }
-  if (minutes) {
-    return {
-      value: minutes,
-      type: IntervalTypes.Minutes,
-    };
-  }
-  if (hours) {
-    return {
-      value: hours,
-      type: IntervalTypes.Hours,
-    };
-  }
-
-  return {
-    value: undefined,
-    type: IntervalTypes.Seconds,
-  };
-};
 
 const EditPostPackPage = () => {
   const { groups, groupPacks, postData } = useLoaderData() as {

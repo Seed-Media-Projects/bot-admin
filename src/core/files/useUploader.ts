@@ -7,7 +7,13 @@ import { FileInfo } from './types';
 
 const oneMB = 1048576;
 
-export const useUploader = ({ onFinishUpload }: { onFinishUpload: (f: FileInfo) => void }) => {
+export const useUploader = ({
+  onFinishUpload,
+  maxFiles = 10,
+}: {
+  onFinishUpload: (f: FileInfo) => void;
+  maxFiles?: number;
+}) => {
   const loading = useUnit(uploadFileFX.pending);
   const [progress, setProgress] = useState<Record<string, number>>({});
 
@@ -39,7 +45,8 @@ export const useUploader = ({ onFinishUpload }: { onFinishUpload: (f: FileInfo) 
     },
     maxSize: oneMB * 50,
     disabled: loading,
-    maxFiles: 10,
+    maxFiles,
+    multiple: maxFiles > 1,
     onDrop: async (acceptedFiles: File[]) => {
       try {
         await Promise.all(acceptedFiles.map(f => uploadFn(f)));

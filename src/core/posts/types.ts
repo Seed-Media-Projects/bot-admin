@@ -21,6 +21,8 @@ export enum VkPostStatus {
 
 export type GroupPostStatusInfo = {
   status: VkPostStatus;
+  postId?: number;
+  commentId?: number;
   error?: string;
 };
 
