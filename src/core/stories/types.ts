@@ -8,6 +8,8 @@ export type VkStorySettings = {
   status: VkPostStatus;
   allGroupsText?: string;
   groupsText?: Record<number, string>;
+  allGroupsLink?: string;
+  groupsLink?: Record<number, string>;
 };
 
 export type GroupStoryStatusInfo = {
@@ -48,6 +50,8 @@ export type VkStoryPackDetail = {
 export type StorySettingsDto = {
   allGroupsText?: string;
   groupsText?: Record<number, string>;
+  allGroupsLink?: string;
+  groupsLink?: Record<number, string>;
 };
 
 export type StoryFileDto = {

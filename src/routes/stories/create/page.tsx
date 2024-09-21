@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { intervalTypeOptions, postTargetOptions } from '@routes/posts/constants';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Form, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
 import { storyTextOptions } from '../constants';
 import { createStoryPackAction } from './action';
@@ -115,55 +115,72 @@ const CreateStoryPackPage = () => {
         {multipleDesc ? (
           postTarget === 'groupPacks' ? (
             groupPackDetail?.packItems.map(g => (
-              <TextField
-                margin="normal"
-                key={g.id}
-                select
-                name={`groupsText_${g.group.id}`}
-                label={`Кнопка для ${g.group.name}`}
-                fullWidth
-              >
-                {storyTextOptions.map(o => (
-                  <MenuItem key={o.value} value={o.value}>
-                    {o.title}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <Fragment key={g.id}>
+                <TextField
+                  margin="normal"
+                  key={g.id}
+                  select
+                  name={`groupsText_${g.group.id}`}
+                  label={`Кнопка для ${g.group.name}`}
+                  fullWidth
+                >
+                  {storyTextOptions.map(o => (
+                    <MenuItem key={o.value} value={o.value}>
+                      {o.title}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  name={`groupsLink_${g.group.id}`}
+                  label={`Ссылка для ${g.group.name}`}
+                />
+              </Fragment>
             ))
           ) : postTarget === 'toAllGroups' ? (
             groups.map(g => (
-              <TextField
-                fullWidth
-                margin="normal"
-                key={g.id}
-                select
-                name={`groupsText_${g.id}`}
-                label={`Кнопка для ${g.name}`}
-              >
+              <Fragment key={g.id}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  key={g.id}
+                  select
+                  name={`groupsText_${g.id}`}
+                  label={`Кнопка для ${g.name}`}
+                >
+                  {storyTextOptions.map(o => (
+                    <MenuItem key={o.value} value={o.value}>
+                      {o.title}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField fullWidth margin="normal" name={`groupsLink_${g.id}`} label={`Ссылка для ${g.name}`} />
+              </Fragment>
+            ))
+          ) : (
+            <>
+              <TextField fullWidth margin="normal" select name="allGroupsText" label={`Кнопка для группы`}>
                 {storyTextOptions.map(o => (
                   <MenuItem key={o.value} value={o.value}>
                     {o.title}
                   </MenuItem>
                 ))}
               </TextField>
-            ))
-          ) : (
-            <TextField fullWidth margin="normal" select name="allGroupsText" label={`Кнопка для группы`}>
+              <TextField fullWidth margin="normal" name="allGroupsLink" label={`Ссылка для группы`} />
+            </>
+          )
+        ) : (
+          <>
+            <TextField fullWidth margin="normal" select name="allGroupsText" label={`Кнопка для всех групп`}>
               {storyTextOptions.map(o => (
                 <MenuItem key={o.value} value={o.value}>
                   {o.title}
                 </MenuItem>
               ))}
             </TextField>
-          )
-        ) : (
-          <TextField fullWidth margin="normal" select name="allGroupsText" label={`Кнопка для всех групп`}>
-            {storyTextOptions.map(o => (
-              <MenuItem key={o.value} value={o.value}>
-                {o.title}
-              </MenuItem>
-            ))}
-          </TextField>
+            <TextField fullWidth margin="normal" name="allGroupsLink" label={`Ссылка для всех групп`} />
+          </>
         )}
 
         <input type="hidden" name="file" value={postFiles.length ? JSON.stringify(postFiles[0]) : undefined} />

@@ -22,7 +22,7 @@ import { intervalTypeOptions, postStatusBundle, postTargetOptions } from '@route
 import { getValuesFromInterval } from '@routes/posts/utils';
 import { CustomAvatar } from '@ui/table/config-elements';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Form, useLoaderData } from 'react-router-dom';
 import { storyTextOptions } from '../constants';
 import { editStoryPackLoader } from './loader';
@@ -182,33 +182,71 @@ const EditStoryPackPage = () => {
         {multipleDesc ? (
           postTarget === 'groupPacks' ? (
             groupPackDetail?.packItems.map(g => (
-              <TextField
-                margin="normal"
-                key={g.id}
-                select
-                name={`groupsText_${g.group.id}`}
-                label={`Кнопка для ${g.group.name}`}
-                fullWidth
-                defaultValue={story.settings.groupsText?.[g.group.id] ?? ''}
-                disabled
-              >
-                {storyTextOptions.map(o => (
-                  <MenuItem key={o.value} value={o.value}>
-                    {o.title}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <Fragment key={g.id}>
+                <TextField
+                  margin="normal"
+                  key={g.id}
+                  select
+                  name={`groupsText_${g.group.id}`}
+                  label={`Кнопка для ${g.group.name}`}
+                  fullWidth
+                  defaultValue={story.settings.groupsText?.[g.group.id] ?? ''}
+                  disabled
+                >
+                  {storyTextOptions.map(o => (
+                    <MenuItem key={o.value} value={o.value}>
+                      {o.title}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  name={`groupsLink_${g.group.id}`}
+                  label={`Ссылка для ${g.group.name}`}
+                  defaultValue={story.settings.groupsLink?.[g.group.id] ?? ''}
+                  disabled
+                />
+              </Fragment>
             ))
           ) : postTarget === 'toAllGroups' ? (
             groups.map(g => (
+              <Fragment key={g.id}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  key={g.id}
+                  select
+                  name={`groupsText_${g.id}`}
+                  label={`Кнопка для ${g.name}`}
+                  defaultValue={story.settings.groupsText?.[g.id] ?? ''}
+                  disabled
+                >
+                  {storyTextOptions.map(o => (
+                    <MenuItem key={o.value} value={o.value}>
+                      {o.title}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  name={`groupsLink_${g.id}`}
+                  label={`Ссылка для ${g.name}`}
+                  defaultValue={story.settings.groupsLink?.[g.id] ?? ''}
+                  disabled
+                />
+              </Fragment>
+            ))
+          ) : (
+            <>
               <TextField
                 fullWidth
                 margin="normal"
-                key={g.id}
                 select
-                name={`groupsText_${g.id}`}
-                label={`Кнопка для ${g.name}`}
-                defaultValue={story.settings.groupsText?.[g.id] ?? ''}
+                name="allGroupsText"
+                label={`Кнопка для группы`}
+                defaultValue={story.settings.allGroupsText ?? ''}
                 disabled
               >
                 {storyTextOptions.map(o => (
@@ -217,14 +255,24 @@ const EditStoryPackPage = () => {
                   </MenuItem>
                 ))}
               </TextField>
-            ))
-          ) : (
+              <TextField
+                fullWidth
+                margin="normal"
+                name="allGroupsLink"
+                label={`Ссылка для группы`}
+                defaultValue={story.settings.allGroupsLink ?? ''}
+                disabled
+              />
+            </>
+          )
+        ) : (
+          <>
             <TextField
               fullWidth
               margin="normal"
               select
               name="allGroupsText"
-              label={`Кнопка для группы`}
+              label={`Кнопка для всех групп`}
               defaultValue={story.settings.allGroupsText ?? ''}
               disabled
             >
@@ -234,23 +282,15 @@ const EditStoryPackPage = () => {
                 </MenuItem>
               ))}
             </TextField>
-          )
-        ) : (
-          <TextField
-            fullWidth
-            margin="normal"
-            select
-            name="allGroupsText"
-            label={`Кнопка для всех групп`}
-            defaultValue={story.settings.allGroupsText ?? ''}
-            disabled
-          >
-            {storyTextOptions.map(o => (
-              <MenuItem key={o.value} value={o.value}>
-                {o.title}
-              </MenuItem>
-            ))}
-          </TextField>
+            <TextField
+              fullWidth
+              margin="normal"
+              name="allGroupsLink"
+              label={`Ссылка для всех групп`}
+              defaultValue={story.settings.allGroupsLink ?? ''}
+              disabled
+            />
+          </>
         )}
 
         <input type="hidden" name="file" value={postFiles.length ? JSON.stringify(postFiles[0]) : undefined} />

@@ -19,6 +19,14 @@ export const createStoryPackAction = async ({ request }: LoaderFunctionArgs) => 
     }
     return acc;
   }, {});
+  const groupsLink = objKeys(payload).reduce<Record<number, string>>((acc, next) => {
+    const nextKey = next.toString();
+    if (nextKey.startsWith('groupsLink_')) {
+      const [, id] = nextKey.split('_');
+      acc[Number(id)] = payload[nextKey].toString();
+    }
+    return acc;
+  }, {});
 
   const storyFile = JSON.parse(payload.file?.toString() ?? '') as FileInfo;
 
@@ -33,6 +41,8 @@ export const createStoryPackAction = async ({ request }: LoaderFunctionArgs) => 
     settings: {
       allGroupsText: payload.allGroupsText?.toString() ?? undefined,
       groupsText: objKeys(groupsText).length ? groupsText : undefined,
+      allGroupsLink: payload.allGroupsLink?.toString() ?? undefined,
+      groupsLink: objKeys(groupsLink).length ? groupsLink : undefined,
     },
     postInterval: payload.postInterval ? Number(payload.postInterval) : null,
     postIntervalType: payload.postIntervalType as IntervalTypes,
