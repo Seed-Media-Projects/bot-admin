@@ -22,3 +22,8 @@ export const createStoryPackFX = createEffect(async (payload: CreateStoryDto) =>
 export const deleteStoryPackFX = createEffect(async (id: string) => {
   await AXPOSTER.delete(`/admin/api/stories/${id}`);
 });
+export const deleteSpecificVkStoryFX = createEffect(
+  async ({ groupId, id, vkStoryId }: { id: string; groupId: number; vkStoryId: number }) => {
+    await AXPOSTER.delete(`/admin/api/stories/specific/${id}/${groupId}/${vkStoryId}`);
+  },
+);

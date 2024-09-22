@@ -2,9 +2,10 @@ import { FileInfo, useUploader } from '@core/files';
 import { getGroupPackFX, GroupPackDetail, GroupPackItem } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
 import { VkPostStatus } from '@core/posts';
-import { VkStoryPackDetail, VkStoryStats } from '@core/stories';
+import { deleteSpecificVkStoryFX, VkStoryPackDetail, VkStoryStats } from '@core/stories';
 import { objKeys } from '@core/utils/mappings';
 import ClearIcon from '@mui/icons-material/Clear';
+import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
@@ -26,8 +27,9 @@ import { intervalTypeOptions, postStatusBundle, postTargetOptions } from '@route
 import { getValuesFromInterval } from '@routes/posts/utils';
 import { CustomAvatar } from '@ui/table/config-elements';
 import dayjs from 'dayjs';
+import { useUnit } from 'effector-react';
 import { Fragment, useEffect, useState } from 'react';
-import { Form, useLoaderData } from 'react-router-dom';
+import { Form, useLoaderData, useNavigate } from 'react-router-dom';
 import { storyTextOptions } from '../constants';
 import { editStoryPackLoader } from './loader';
 
@@ -46,8 +48,10 @@ const EditStoryPackPage = () => {
   const [postTarget, setPostTarget] = useState<'toAllGroups' | 'groupPacks' | 'group'>('groupPacks');
   const postUploader = useUploader({ onFinishUpload: f => setPostFiles([f]), maxFiles: 1 });
 
+  const isSpecificLoading = useUnit(deleteSpecificVkStoryFX.pending);
   const isPostsFileUploading = !!objKeys(postUploader.progress).length;
 
+  const navigate = useNavigate();
   // const navigation = useNavigation();
   // const isLoading = navigation.formData?.get('toAllGroups') != null;
 
@@ -99,7 +103,7 @@ const EditStoryPackPage = () => {
       </Typography>
       <Box my={2}>
         {objKeys(storyPack.settings.groupStoryStatus).map(gpk => {
-          const { status, error } = storyPack.settings.groupStoryStatus[gpk];
+          const { status, error, storyId } = storyPack.settings.groupStoryStatus[gpk];
 
           const fixStatus = (status as unknown as string) === 'succes' ? VkPostStatus.Success : status;
 
@@ -113,6 +117,22 @@ const EditStoryPackPage = () => {
                   <Icon />
                 </Tooltip>
               </CustomAvatar>
+              {storyId && (
+                <IconButton
+                  disabled={isSpecificLoading}
+                  onClick={() =>
+                    deleteSpecificVkStoryFX({
+                      id: storyPack.id,
+                      groupId: Number(gpk),
+                      vkStoryId: storyId,
+                    }).then(() => {
+                      navigate('.', { replace: true });
+                    })
+                  }
+                >
+                  {isSpecificLoading ? <CircularProgress size={24} color="primary" /> : <DeleteIcon />}
+                </IconButton>
+              )}
             </Box>
           );
         })}

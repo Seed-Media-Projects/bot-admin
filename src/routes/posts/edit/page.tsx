@@ -1,9 +1,10 @@
 import { FileInfo, useUploader } from '@core/files';
 import { getGroupPackFX, GroupPackDetail, GroupPackItem } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
-import { VkPostPackDetailResponse, VkPostStatus } from '@core/posts';
+import { deleteSpecificVkPostFX, VkPostPackDetailResponse, VkPostStatus } from '@core/posts';
 import { objKeys } from '@core/utils/mappings';
 import ClearIcon from '@mui/icons-material/Clear';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
@@ -19,8 +20,9 @@ import {
 } from '@mui/material';
 import { CustomAvatar } from '@ui/table/config-elements';
 import dayjs from 'dayjs';
+import { useUnit } from 'effector-react';
 import { useEffect, useState } from 'react';
-import { Form, useActionData, useLoaderData } from 'react-router-dom';
+import { Form, useActionData, useLoaderData, useNavigate } from 'react-router-dom';
 import { intervalTypeOptions, postStatusBundle, postTargetOptions, privacyViewOptions } from '../constants';
 import { getValuesFromInterval } from '../utils';
 import { editPostPackLoader } from './loader';
@@ -41,6 +43,9 @@ const EditPostPackPage = () => {
   const [postTarget, setPostTarget] = useState<'toAllGroups' | 'groupPacks' | 'group'>('groupPacks');
   const postUploader = useUploader({ onFinishUpload: f => setPostFiles(v => v.concat(f)) });
   const postUploader2 = useUploader({ onFinishUpload: f => setPostFiles2(v => v.concat(f)) });
+
+  const isSpecificLoading = useUnit(deleteSpecificVkPostFX.pending);
+  const navigate = useNavigate();
 
   // const navigation = useNavigation();
   // const isLoading = navigation.formData?.get('toAllGroups') != null;
@@ -109,7 +114,7 @@ const EditPostPackPage = () => {
       </Typography>
       <Box my={2}>
         {objKeys(postData.post.settings.groupPostStatus).map(gpk => {
-          const { status, error } = postData.post.settings.groupPostStatus[gpk];
+          const { status, error, postId } = postData.post.settings.groupPostStatus[gpk];
 
           const fixStatus = (status as unknown as string) === 'succes' ? VkPostStatus.Success : status;
 
@@ -123,6 +128,22 @@ const EditPostPackPage = () => {
                   <Icon />
                 </Tooltip>
               </CustomAvatar>
+              {postId && (
+                <IconButton
+                  disabled={isSpecificLoading}
+                  onClick={() =>
+                    deleteSpecificVkPostFX({
+                      id: postData.post.id,
+                      groupId: Number(gpk),
+                      vkPostId: postId,
+                    }).then(() => {
+                      navigate('.', { replace: true });
+                    })
+                  }
+                >
+                  {isSpecificLoading ? <CircularProgress size={24} color="primary" /> : <DeleteIcon />}
+                </IconButton>
+              )}
             </Box>
           );
         })}
@@ -528,7 +549,7 @@ const EditPostPackPage = () => {
             </Typography>
             <Box my={2}>
               {objKeys(postData.replacementPost?.settings.groupPostStatus ?? {}).map(gpk => {
-                const { status, error } = postData.replacementPost?.settings.groupPostStatus?.[gpk] ?? {
+                const { status, error, postId } = postData.replacementPost?.settings.groupPostStatus?.[gpk] ?? {
                   status: VkPostStatus.Success,
                 };
 
@@ -544,6 +565,22 @@ const EditPostPackPage = () => {
                         <Icon />
                       </Tooltip>
                     </CustomAvatar>
+                    {postId && postData.replacementPost && (
+                      <IconButton
+                        disabled={isSpecificLoading}
+                        onClick={() =>
+                          deleteSpecificVkPostFX({
+                            id: postData.replacementPost!.id,
+                            groupId: Number(gpk),
+                            vkPostId: postId,
+                          }).then(() => {
+                            navigate('.', { replace: true });
+                          })
+                        }
+                      >
+                        {isSpecificLoading ? <CircularProgress size={24} color="primary" /> : <DeleteIcon />}
+                      </IconButton>
+                    )}
                   </Box>
                 );
               })}

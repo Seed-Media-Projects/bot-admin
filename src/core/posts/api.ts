@@ -20,3 +20,9 @@ export const createPostPackFX = createEffect(async (payload: CreatePostDto) => {
 export const deletePostPackFX = createEffect(async (id: string) => {
   await AXPOSTER.delete(`/admin/api/posts/${id}`);
 });
+
+export const deleteSpecificVkPostFX = createEffect(
+  async ({ groupId, id, vkPostId }: { id: string; groupId: number; vkPostId: number }) => {
+    await AXPOSTER.delete(`/admin/api/posts/specific/${id}/${groupId}/${vkPostId}`);
+  },
+);
