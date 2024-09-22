@@ -69,3 +69,13 @@ export type CreateStoryDto = {
   groupId: number | null;
   file: StoryFileDto;
 };
+
+export type VkStoryStats = {
+  views: number;
+  openLink: number;
+  replies: number;
+  answer: number;
+  shares: number;
+  subscribers: number;
+  bans: number;
+};

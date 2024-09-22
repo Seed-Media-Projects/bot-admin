@@ -1,6 +1,6 @@
 import { AXPOSTER } from '@core/data/fetcher';
 import { createEffect } from 'effector';
-import { CreateStoryDto, VkStoryPackDetail, VkStoryPackItem } from './types';
+import { CreateStoryDto, VkStoryPackDetail, VkStoryPackItem, VkStoryStats } from './types';
 
 export const getStoryPacksFX = createEffect(async () => {
   const { data } = await AXPOSTER.get<VkStoryPackItem[]>(`/admin/api/stories`);
@@ -8,7 +8,9 @@ export const getStoryPacksFX = createEffect(async () => {
   return data;
 });
 export const getStoryPackFX = createEffect(async (id: string) => {
-  const { data } = await AXPOSTER.get<VkStoryPackDetail>(`/admin/api/stories/${id}`);
+  const { data } = await AXPOSTER.get<{ storyPack: VkStoryPackDetail; stats: Record<number, VkStoryStats> }>(
+    `/admin/api/stories/${id}`,
+  );
 
   return data;
 });

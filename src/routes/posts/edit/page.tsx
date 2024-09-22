@@ -116,7 +116,7 @@ const EditPostPackPage = () => {
           const Icon = postStatusBundle[fixStatus].icon;
 
           return (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box key={gpk} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography>{groups.find(g => g.id === Number(gpk))?.name}</Typography>
               <CustomAvatar color={postStatusBundle[fixStatus].color}>
                 <Tooltip title={error ?? postStatusBundle[fixStatus].tooltip ?? ''} placement="top" arrow>
@@ -537,7 +537,7 @@ const EditPostPackPage = () => {
                 const Icon = postStatusBundle[fixStatus].icon;
 
                 return (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box key={gpk} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Typography>{groups.find(g => g.id === Number(gpk))?.name}</Typography>
                     <CustomAvatar color={postStatusBundle[fixStatus].color}>
                       <Tooltip title={error ?? postStatusBundle[fixStatus].tooltip ?? ''} placement="top" arrow>

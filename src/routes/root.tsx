@@ -136,7 +136,13 @@ export const Component = () => {
         <Outlet />
       </Box>
       {snacks.map(snack => (
-        <Snackbar open autoHideDuration={6000} onClose={() => closeSnack({ id: snack.id })} message={snack.message}>
+        <Snackbar
+          key={snack.message}
+          open
+          autoHideDuration={6000}
+          onClose={() => closeSnack({ id: snack.id })}
+          message={snack.message}
+        >
           <Alert
             onClose={() => closeSnack({ id: snack.id })}
             severity={snack.severity}

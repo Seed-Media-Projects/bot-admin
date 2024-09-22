@@ -2,10 +2,14 @@ import { FileInfo, useUploader } from '@core/files';
 import { getGroupPackFX, GroupPackDetail, GroupPackItem } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
 import { VkPostStatus } from '@core/posts';
-import { VkStoryPackDetail } from '@core/stories';
+import { VkStoryPackDetail, VkStoryStats } from '@core/stories';
 import { objKeys } from '@core/utils/mappings';
 import ClearIcon from '@mui/icons-material/Clear';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   CircularProgress,
@@ -28,11 +32,12 @@ import { storyTextOptions } from '../constants';
 import { editStoryPackLoader } from './loader';
 
 const EditStoryPackPage = () => {
-  const { groups, groupPacks, story } = useLoaderData() as {
+  const { groups, groupPacks, storyPack, stats } = useLoaderData() as {
     groups: VkGroupItem[];
     groupPacks: GroupPackItem[];
 
-    story: VkStoryPackDetail | null;
+    storyPack: VkStoryPackDetail | null;
+    stats: Record<number, VkStoryStats> | null;
   };
   const [postFiles, setPostFiles] = useState<FileInfo[]>([]);
   const [groupPackId, setGroupPackId] = useState<number | null>(null);
@@ -53,25 +58,25 @@ const EditStoryPackPage = () => {
   }, [groupPackId]);
 
   useEffect(() => {
-    if (story) {
-      setPostTarget(story.toAllGroups ? 'toAllGroups' : story.groupPack ? 'groupPacks' : 'group');
-      if (story.groupPack) {
-        setGroupPackId(story.groupPack.id);
+    if (storyPack) {
+      setPostTarget(storyPack.toAllGroups ? 'toAllGroups' : storyPack.groupPack ? 'groupPacks' : 'group');
+      if (storyPack.groupPack) {
+        setGroupPackId(storyPack.groupPack.id);
       }
       setPostFiles([
         {
-          fileType: story.fileType,
+          fileType: storyPack.fileType,
           privacyView: null,
-          fileName: story.file.name ?? '',
-          id: story.file.id,
-          url: story.file.fileUrl,
+          fileName: storyPack.file.name ?? '',
+          id: storyPack.file.id,
+          url: storyPack.file.fileUrl,
         },
       ]);
-      setMultipleDesc(!story.settings.allGroupsText);
+      setMultipleDesc(!storyPack.settings.allGroupsText);
     }
-  }, [story]);
+  }, [storyPack]);
 
-  if (!story) {
+  if (!storyPack) {
     return <Typography>Story not found</Typography>;
   }
 
@@ -93,15 +98,15 @@ const EditStoryPackPage = () => {
         Статусы
       </Typography>
       <Box my={2}>
-        {objKeys(story.settings.groupStoryStatus).map(gpk => {
-          const { status, error } = story.settings.groupStoryStatus[gpk];
+        {objKeys(storyPack.settings.groupStoryStatus).map(gpk => {
+          const { status, error } = storyPack.settings.groupStoryStatus[gpk];
 
           const fixStatus = (status as unknown as string) === 'succes' ? VkPostStatus.Success : status;
 
           const Icon = postStatusBundle[fixStatus].icon;
 
           return (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box key={gpk} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography>{groups.find(g => g.id === Number(gpk))?.name}</Typography>
               <CustomAvatar color={postStatusBundle[fixStatus].color}>
                 <Tooltip title={error ?? postStatusBundle[fixStatus].tooltip ?? ''} placement="top" arrow>
@@ -140,7 +145,7 @@ const EditStoryPackPage = () => {
             label="Group packs"
             name="groupPackId"
             onChange={e => setGroupPackId(Number(e.target.value))}
-            defaultValue={story.groupPack?.id}
+            defaultValue={storyPack.groupPack?.id}
             disabled
           >
             {groupPacks.map(o => (
@@ -159,7 +164,7 @@ const EditStoryPackPage = () => {
             select
             label="Group"
             name="groupId"
-            defaultValue={story.group?.id}
+            defaultValue={storyPack.group?.id}
           >
             {groups.map(o => (
               <MenuItem key={o.id} value={o.id}>
@@ -190,7 +195,7 @@ const EditStoryPackPage = () => {
                   name={`groupsText_${g.group.id}`}
                   label={`Кнопка для ${g.group.name}`}
                   fullWidth
-                  defaultValue={story.settings.groupsText?.[g.group.id] ?? ''}
+                  defaultValue={storyPack.settings.groupsText?.[g.group.id] ?? ''}
                   disabled
                 >
                   {storyTextOptions.map(o => (
@@ -204,7 +209,7 @@ const EditStoryPackPage = () => {
                   margin="normal"
                   name={`groupsLink_${g.group.id}`}
                   label={`Ссылка для ${g.group.name}`}
-                  defaultValue={story.settings.groupsLink?.[g.group.id] ?? ''}
+                  defaultValue={storyPack.settings.groupsLink?.[g.group.id] ?? ''}
                   disabled
                 />
               </Fragment>
@@ -219,7 +224,7 @@ const EditStoryPackPage = () => {
                   select
                   name={`groupsText_${g.id}`}
                   label={`Кнопка для ${g.name}`}
-                  defaultValue={story.settings.groupsText?.[g.id] ?? ''}
+                  defaultValue={storyPack.settings.groupsText?.[g.id] ?? ''}
                   disabled
                 >
                   {storyTextOptions.map(o => (
@@ -233,7 +238,7 @@ const EditStoryPackPage = () => {
                   margin="normal"
                   name={`groupsLink_${g.id}`}
                   label={`Ссылка для ${g.name}`}
-                  defaultValue={story.settings.groupsLink?.[g.id] ?? ''}
+                  defaultValue={storyPack.settings.groupsLink?.[g.id] ?? ''}
                   disabled
                 />
               </Fragment>
@@ -246,7 +251,7 @@ const EditStoryPackPage = () => {
                 select
                 name="allGroupsText"
                 label={`Кнопка для группы`}
-                defaultValue={story.settings.allGroupsText ?? ''}
+                defaultValue={storyPack.settings.allGroupsText ?? ''}
                 disabled
               >
                 {storyTextOptions.map(o => (
@@ -260,7 +265,7 @@ const EditStoryPackPage = () => {
                 margin="normal"
                 name="allGroupsLink"
                 label={`Ссылка для группы`}
-                defaultValue={story.settings.allGroupsLink ?? ''}
+                defaultValue={storyPack.settings.allGroupsLink ?? ''}
                 disabled
               />
             </>
@@ -273,7 +278,7 @@ const EditStoryPackPage = () => {
               select
               name="allGroupsText"
               label={`Кнопка для всех групп`}
-              defaultValue={story.settings.allGroupsText ?? ''}
+              defaultValue={storyPack.settings.allGroupsText ?? ''}
               disabled
             >
               {storyTextOptions.map(o => (
@@ -287,7 +292,7 @@ const EditStoryPackPage = () => {
               margin="normal"
               name="allGroupsLink"
               label={`Ссылка для всех групп`}
-              defaultValue={story.settings.allGroupsLink ?? ''}
+              defaultValue={storyPack.settings.allGroupsLink ?? ''}
               disabled
             />
           </>
@@ -362,7 +367,7 @@ const EditStoryPackPage = () => {
           label="Время поста"
           name="postDate"
           type="datetime-local"
-          defaultValue={story.postDate ? dayjs(story.postDate).format('YYYY-MM-DDTHH:mm') : undefined}
+          defaultValue={storyPack.postDate ? dayjs(storyPack.postDate).format('YYYY-MM-DDTHH:mm') : undefined}
           disabled
           slotProps={{
             inputLabel: {
@@ -384,14 +389,14 @@ const EditStoryPackPage = () => {
             label="Пост интервал"
             name="postInterval"
             type="number"
-            defaultValue={story.postInterval ? getValuesFromInterval(story.postInterval).value : undefined}
+            defaultValue={storyPack.postInterval ? getValuesFromInterval(storyPack.postInterval).value : undefined}
             disabled
           />
           <TextField
             margin="normal"
             select
             name="postIntervalType"
-            defaultValue={story.postInterval ? getValuesFromInterval(story.postInterval).type : undefined}
+            defaultValue={storyPack.postInterval ? getValuesFromInterval(storyPack.postInterval).type : undefined}
             disabled
           >
             {intervalTypeOptions.map(o => (
@@ -402,6 +407,52 @@ const EditStoryPackPage = () => {
           </TextField>
         </Box>
       </Form>
+      {stats && (
+        <>
+          <Typography mt={2} variant="h6" gutterBottom>
+            Статистика
+          </Typography>
+          <Box my={2}>
+            {objKeys(storyPack.settings.groupStoryStatus).map(gpk => {
+              const statsData = stats[gpk];
+
+              return (
+                <Box key={gpk}>
+                  <Accordion>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
+                      {groups.find(g => g.id === Number(gpk))?.name}
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography>
+                        Просмотры: <b>{statsData.views}</b>
+                      </Typography>
+                      <Typography>
+                        Ответы на историю: <b>{statsData.replies}</b>
+                      </Typography>
+                      <Typography>
+                        Показывает сколько раз ответили на эту историю сообщением через поле под историей:{' '}
+                        <b>{statsData.answer}</b>
+                      </Typography>
+                      <Typography>
+                        Расшаривания истории: <b>{statsData.shares}</b>
+                      </Typography>
+                      <Typography>
+                        Новые подписчики: <b>{statsData.subscribers}</b>
+                      </Typography>
+                      <Typography>
+                        Скрытия истории: <b>{statsData.bans}</b>
+                      </Typography>
+                      <Typography>
+                        Переходы по ссылке: <b>{statsData.openLink}</b>
+                      </Typography>
+                    </AccordionDetails>
+                  </Accordion>
+                </Box>
+              );
+            })}
+          </Box>
+        </>
+      )}
     </Box>
   );
 };
