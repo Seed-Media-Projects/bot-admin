@@ -1,5 +1,6 @@
 import { LS, LSKeys } from '@core/local-store';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import AdsClickIcon from '@mui/icons-material/AdsClick';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import GroupsIcon from '@mui/icons-material/Groups';
 import HomeIcon from '@mui/icons-material/Home';
@@ -125,6 +126,16 @@ export const Component = () => {
                       <PhoneIphoneIcon />
                     </ListItemIcon>
                     <ListItemText primary="Сторисы" />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+              <Link href="/search-wall" sx={{ textDecoration: 'none', color: 'MenuText' }}>
+                <ListItem disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <AdsClickIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Сбор рекламы" />
                   </ListItemButton>
                 </ListItem>
               </Link>

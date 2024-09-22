@@ -65,6 +65,10 @@ const router = createBrowserRouter([
         path: 'posts/:id',
         lazy: () => import('@routes/posts/edit'),
       },
+      {
+        path: 'search-wall',
+        lazy: () => import('@routes/search-wall'),
+      },
     ],
   },
   {
