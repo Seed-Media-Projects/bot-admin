@@ -76,7 +76,7 @@ const AdsPage = () => {
         </TextField>
 
         {postTarget === 'groupPacks' ? (
-          <TextField margin="normal" required fullWidth select label="Group packs" name="groupPackId">
+          <TextField required margin="normal" fullWidth select label="Group packs" name="groupPackId">
             {groupPacks.map(o => (
               <MenuItem key={o.id} value={o.id}>
                 {o.name}
@@ -85,7 +85,7 @@ const AdsPage = () => {
           </TextField>
         ) : null}
         {postTarget === 'group' ? (
-          <TextField margin="normal" required fullWidth select label="Group" name="groupId">
+          <TextField required margin="normal" fullWidth select label="Group" name="groupId">
             {groups.map(o => (
               <MenuItem key={o.id} value={o.id}>
                 {o.name}
@@ -94,12 +94,13 @@ const AdsPage = () => {
           </TextField>
         ) : null}
 
-        <TextField margin="normal" fullWidth label="Поисковой запрос" name="query" type="text" />
+        <TextField required margin="normal" fullWidth label="Поисковой запрос" name="query" type="text" />
 
         {adsTarget === '1' ? (
           <TextField
             margin="normal"
             fullWidth
+            required
             label="Дата"
             name="date"
             type="date"
@@ -114,6 +115,7 @@ const AdsPage = () => {
             <TextField
               margin="normal"
               fullWidth
+              required
               label="От"
               name="from"
               type="datetime-local"
@@ -126,6 +128,7 @@ const AdsPage = () => {
             <TextField
               margin="normal"
               fullWidth
+              required
               label="До"
               name="to"
               type="datetime-local"
