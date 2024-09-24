@@ -10,6 +10,7 @@ export type VkStorySettings = {
   groupsText?: Record<number, string>;
   allGroupsLink?: string;
   groupsLink?: Record<number, string>;
+  stopJobs: boolean;
 };
 
 export type GroupStoryStatusInfo = {

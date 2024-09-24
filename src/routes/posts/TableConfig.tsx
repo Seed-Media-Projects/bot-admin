@@ -1,7 +1,8 @@
 import { GroupPackItem } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
-import { deletePostPackFX, VkPostPackItem } from '@core/posts';
+import { deletePostPackFX, stopPostJobsPackFX, VkPostPackItem } from '@core/posts';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { ActionModal } from '@ui/modal/ActionModal';
@@ -106,6 +107,7 @@ export const tablePostPacksConfig: ColumnShape<VkPostPackItem>[] = [
 
   {
     ...actionsConfig(),
+    width: 150,
     cellRenderer: ({ rowData }) => <Actions postPack={rowData} />,
   },
 ];
@@ -127,7 +129,10 @@ const Target = ({ postPack }: { postPack: VkPostPackItem }) => {
 const Actions = ({ postPack }: { postPack: VkPostPackItem }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openStop, setOpenStop] = useState(false);
   const loading = useUnit(deletePostPackFX.pending);
+  const loadingStop = useUnit(stopPostJobsPackFX.pending);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -142,6 +147,11 @@ const Actions = ({ postPack }: { postPack: VkPostPackItem }) => {
       ]}
       deleteBtn={
         <>
+          <IconButton onClick={() => setOpenStop(true)} disabled={postPack.settings.stopJobs}>
+            <Tooltip title="Остановить постинг">
+              <DoNotDisturbIcon />
+            </Tooltip>
+          </IconButton>
           <IconButton onClick={handleOpen}>
             <DeleteIcon />
           </IconButton>
@@ -157,6 +167,19 @@ const Actions = ({ postPack }: { postPack: VkPostPackItem }) => {
             open={open}
             title={`Delete post pack: ${postPack.id}`}
             subtitle="Are you sure?"
+          />
+          <ActionModal
+            loading={loadingStop}
+            onClose={() => setOpenStop(false)}
+            onConfirm={() => {
+              stopPostJobsPackFX(postPack.id).then(() => {
+                setOpenStop(false);
+                navigate('.', { replace: true });
+              });
+            }}
+            open={openStop}
+            title={`Остановить постинг в: ${postPack.id}`}
+            subtitle="Подтверждаете действие?"
           />
         </>
       }

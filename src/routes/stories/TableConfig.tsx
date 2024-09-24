@@ -1,7 +1,8 @@
 import { GroupPackItem } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
-import { deleteStoryPackFX, VkStoryPackItem } from '@core/stories';
+import { deleteStoryPackFX, stopStoryJobsPackFX, VkStoryPackItem } from '@core/stories';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { postStatusBundle } from '@routes/posts/constants';
@@ -76,6 +77,7 @@ export const tableStoryPacksConfig: ColumnShape<VkStoryPackItem>[] = [
 
   {
     ...actionsConfig(),
+    width: 150,
     cellRenderer: ({ rowData }) => <Actions storyPack={rowData} />,
   },
 ];
@@ -97,7 +99,9 @@ const Target = ({ storyPack }: { storyPack: VkStoryPackItem }) => {
 const Actions = ({ storyPack }: { storyPack: VkStoryPackItem }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openStop, setOpenStop] = useState(false);
   const loading = useUnit(deleteStoryPackFX.pending);
+  const loadingStop = useUnit(stopStoryJobsPackFX.pending);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -112,6 +116,11 @@ const Actions = ({ storyPack }: { storyPack: VkStoryPackItem }) => {
       ]}
       deleteBtn={
         <>
+          <IconButton onClick={() => setOpenStop(true)} disabled={storyPack.settings.stopJobs}>
+            <Tooltip title="Остановить постинг">
+              <DoNotDisturbIcon />
+            </Tooltip>
+          </IconButton>
           <IconButton onClick={handleOpen}>
             <DeleteIcon />
           </IconButton>
@@ -127,6 +136,19 @@ const Actions = ({ storyPack }: { storyPack: VkStoryPackItem }) => {
             open={open}
             title={`Delete story pack: ${storyPack.id}`}
             subtitle="Are you sure?"
+          />
+          <ActionModal
+            loading={loadingStop}
+            onClose={() => setOpenStop(false)}
+            onConfirm={() => {
+              stopStoryJobsPackFX(storyPack.id).then(() => {
+                setOpenStop(false);
+                navigate('.', { replace: true });
+              });
+            }}
+            open={openStop}
+            title={`Остановить постинг в: ${storyPack.id}`}
+            subtitle="Подтверждаете действие?"
           />
         </>
       }

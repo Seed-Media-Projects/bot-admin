@@ -17,6 +17,10 @@ export const createPostPackFX = createEffect(async (payload: CreatePostDto) => {
   await AXPOSTER.post(`/admin/api/posts`, payload);
 });
 
+export const stopPostJobsPackFX = createEffect(async (id: string) => {
+  await AXPOSTER.post(`/admin/api/posts/jobs/stop/${id}`);
+});
+
 export const deletePostPackFX = createEffect(async (id: string) => {
   await AXPOSTER.delete(`/admin/api/posts/${id}`);
 });

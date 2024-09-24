@@ -1,6 +1,7 @@
 import { IntervalTypes, VkPostStatus } from '@core/posts';
 import { objKeys } from '@core/utils/mappings';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import DownloadingIcon from '@mui/icons-material/Downloading';
 import ErrorIcon from '@mui/icons-material/Error';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
@@ -16,6 +17,11 @@ export const postStatusBundle: Record<VkPostStatus, AvaStatusBundle> = {
     color: 'primary',
     icon: DownloadingIcon,
     tooltip: 'In progress',
+  },
+  [VkPostStatus.Stopped]: {
+    color: 'warning',
+    icon: DoNotDisturbIcon,
+    tooltip: 'Stopped',
   },
   [VkPostStatus.Success]: {
     color: 'success',

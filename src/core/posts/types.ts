@@ -11,10 +11,12 @@ export type VkPostSettings = {
   status: VkPostStatus;
   allGroupsText?: string;
   groupsText?: Record<number, string>;
+  stopJobs: boolean;
 };
 export enum VkPostStatus {
   Scheduled = 'scheduled',
   InProgress = 'in_progess',
+  Stopped = 'stopped',
   Success = 'success',
   Failed = 'failed',
 }

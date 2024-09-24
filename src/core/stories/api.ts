@@ -18,6 +18,9 @@ export const getStoryPackFX = createEffect(async (id: string) => {
 export const createStoryPackFX = createEffect(async (payload: CreateStoryDto) => {
   await AXPOSTER.post(`/admin/api/stories`, payload);
 });
+export const stopStoryJobsPackFX = createEffect(async (id: string) => {
+  await AXPOSTER.post(`/admin/api/stories/jobs/stop/${id}`);
+});
 
 export const deleteStoryPackFX = createEffect(async (id: string) => {
   await AXPOSTER.delete(`/admin/api/stories/${id}`);
