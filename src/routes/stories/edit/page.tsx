@@ -4,6 +4,7 @@ import { VkGroupItem } from '@core/groups';
 import { VkPostStatus } from '@core/posts';
 import { deleteSpecificVkStoryFX, VkStoryPackDetail, VkStoryStats } from '@core/stories';
 import { objKeys } from '@core/utils/mappings';
+import { useInterval } from '@core/utils/userInterval';
 import ClearIcon from '@mui/icons-material/Clear';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -52,6 +53,8 @@ const EditStoryPackPage = () => {
   const isPostsFileUploading = !!objKeys(postUploader.progress).length;
 
   const navigate = useNavigate();
+
+  useInterval(() => navigate('.', { replace: true }), 5000);
   // const navigation = useNavigation();
   // const isLoading = navigation.formData?.get('toAllGroups') != null;
 

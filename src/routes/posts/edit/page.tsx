@@ -3,6 +3,7 @@ import { getGroupPackFX, GroupPackDetail, GroupPackItem } from '@core/group-pack
 import { VkGroupItem } from '@core/groups';
 import { deleteSpecificVkPostFX, VkPostPackDetailResponse, VkPostStatus } from '@core/posts';
 import { objKeys } from '@core/utils/mappings';
+import { useInterval } from '@core/utils/userInterval';
 import ClearIcon from '@mui/icons-material/Clear';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
@@ -46,6 +47,8 @@ const EditPostPackPage = () => {
 
   const isSpecificLoading = useUnit(deleteSpecificVkPostFX.pending);
   const navigate = useNavigate();
+
+  useInterval(() => navigate('.', { replace: true }), 5000);
 
   // const navigation = useNavigation();
   // const isLoading = navigation.formData?.get('toAllGroups') != null;
