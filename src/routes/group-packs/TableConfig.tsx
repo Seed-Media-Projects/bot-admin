@@ -1,10 +1,10 @@
 import { deleteGroupPackFX, GroupPackItem } from '@core/group-packs';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
 import { ActionModal } from '@ui/modal/ActionModal';
 import { actionsConfig, RowOptionsIcons } from '@ui/table/RowOptions';
-import { typographyColumn, typographyDateColumn } from '@ui/table/config-elements';
+import { typographyColumn } from '@ui/table/config-elements';
 import { useUnit } from 'effector-react';
 import { useState } from 'react';
 import { ColumnShape } from 'react-base-table';
@@ -12,19 +12,22 @@ import { useNavigate } from 'react-router-dom';
 
 export const tableGroupPacksConfig: ColumnShape<GroupPackItem>[] = [
   {
-    title: 'Id',
-    ...typographyColumn({ dataKey: 'id' }),
-    width: 60,
-  },
-  {
     title: 'Name',
     ...typographyColumn({ dataKey: 'name' }),
   },
   {
-    title: 'Created',
-    ...typographyDateColumn({ dataKey: 'created' }),
+    key: 'packItems',
+    title: 'Кол групп',
+    width: 80,
+    sortable: false,
+    cellRenderer: ({ rowData }) => {
+      return (
+        <div>
+          <Typography sx={{ whiteSpace: 'normal' }}>{rowData.packItems.length}</Typography>
+        </div>
+      );
+    },
   },
-
   {
     ...actionsConfig(),
     cellRenderer: ({ rowData }) => <Actions groupPack={rowData} />,

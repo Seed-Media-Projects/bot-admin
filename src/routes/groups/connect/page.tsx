@@ -1,5 +1,6 @@
 import { AccountItem } from '@core/accounts';
 import { $groups, getAvailableGroupsFX, toggleGroup } from '@core/groups';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Avatar,
   Box,
@@ -10,12 +11,14 @@ import {
   FormControlLabel,
   FormGroup,
   FormHelperText,
+  IconButton,
   InputLabel,
   ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
   SelectChangeEvent,
+  TextField,
   Typography,
 } from '@mui/material';
 import { useUnit } from 'effector-react';
@@ -41,8 +44,10 @@ const ConnectGroups = () => {
   const { all, selected } = useUnit($groups);
   const navigation = useNavigation();
   const isLoading = navigation.formData?.get('userId') != null;
+  const [searchValue, setSearchValue] = useState('');
 
   const actionData = useActionData() as { error: string } | undefined;
+  const searchedList = all.filter(v => v.name.toLowerCase().includes(searchValue.toLowerCase()));
 
   useEffect(() => {
     $groups.reinit();
@@ -67,7 +72,7 @@ const ConnectGroups = () => {
         Connect groups
       </Typography>
 
-      <Box display="flex" alignItems="center" gap={4} mb={4}>
+      <Box display="flex" alignItems="center" gap={4} mb={1}>
         <FormControl sx={{ mt: 2, width: 300 }}>
           <InputLabel id="select_acc">Account</InputLabel>
           <Select
@@ -95,12 +100,35 @@ const ConnectGroups = () => {
       <Form method="post">
         <input type="hidden" name="groups" value={JSON.stringify(all.filter(ag => selected.includes(ag.id)))} />
         <input type="hidden" name="userId" value={selectedAcc} />
+        {!!all.length && (
+          <TextField
+            onChange={e => setSearchValue(e.target.value)}
+            sx={{ my: 1 }}
+            placeholder="Search"
+            value={searchValue}
+          />
+        )}
         <FormGroup>
-          {all.map(g => (
+          {searchedList.map(g => (
             <FormControlLabel
+              sx={{ mb: 2 }}
               key={g.id}
               control={<Checkbox checked={selected.includes(g.id)} onChange={() => toggleGroup({ groupId: g.id })} />}
-              label={g.name}
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Avatar sx={{ mr: 1 }} src={g.photo_100} />
+                  <ListItemText primary={g.name} />
+                  <IconButton
+                    onClick={e => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.open(`https://vk.com/club${g.id}`, '_blank');
+                    }}
+                  >
+                    <OpenInNewIcon />
+                  </IconButton>
+                </Box>
+              }
             />
           ))}
         </FormGroup>

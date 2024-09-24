@@ -1,5 +1,18 @@
 import { VkGroupItem } from '@core/groups';
-import { Box, Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, TextField, Typography } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import {
+  Avatar,
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  ListItemText,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useCallback, useState } from 'react';
 import { Form, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
 import { createGroupPackAction } from './action';
@@ -10,6 +23,8 @@ const CreateGroupPack = () => {
   const navigation = useNavigation();
   const [selectedGroupIds, setGroupIds] = useState<number[]>([]);
   const isLoading = navigation.formData?.get('name') != null;
+  const [searchValue, setSearchValue] = useState('');
+  const searchedList = groups.filter(v => v.name.toLowerCase().includes(searchValue.toLowerCase()));
 
   const actionData = useActionData() as { error: string } | undefined;
 
@@ -29,15 +44,33 @@ const CreateGroupPack = () => {
         <TextField margin="normal" required fullWidth label="Name" name="name" autoFocus />
 
         <input type="hidden" name="groupIds" value={JSON.stringify(selectedGroupIds)} />
+
+        <TextField onChange={e => setSearchValue(e.target.value)} sx={{ my: 1 }} placeholder="Search" value={searchValue} />
+
         <FormGroup>
           <Typography variant="subtitle1" sx={{ mt: 2 }}>
             Select groups*
           </Typography>
-          {groups.map(g => (
+          {searchedList.map(g => (
             <FormControlLabel
+              sx={{ mb: 2 }}
               key={g.id}
               control={<Checkbox checked={selectedGroupIds.includes(g.id)} onChange={() => toggle(g.id)} />}
-              label={g.name}
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Avatar sx={{ mr: 1 }} src={g.photo} />
+                  <ListItemText primary={g.name} />
+                  <IconButton
+                    onClick={e => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.open(`https://vk.com/club${g.id}`, '_blank');
+                    }}
+                  >
+                    <OpenInNewIcon />
+                  </IconButton>
+                </Box>
+              }
             />
           ))}
         </FormGroup>

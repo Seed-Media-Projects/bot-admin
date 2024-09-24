@@ -4,6 +4,7 @@ export type GroupPackItem = {
   id: number;
   name: string;
   created: string;
+  packItems: number[];
 };
 
 export type GroupPackDetail = {
