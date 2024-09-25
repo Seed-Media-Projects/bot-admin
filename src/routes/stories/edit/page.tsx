@@ -54,7 +54,7 @@ const EditStoryPackPage = () => {
 
   const navigate = useNavigate();
 
-  useInterval(() => navigate('.', { replace: true }), 5000);
+  useInterval(() => navigate('.'), 5000);
   // const navigation = useNavigation();
   // const isLoading = navigation.formData?.get('toAllGroups') != null;
 
@@ -129,7 +129,7 @@ const EditStoryPackPage = () => {
                       groupId: Number(gpk),
                       vkStoryId: storyId,
                     }).then(() => {
-                      navigate('.', { replace: true });
+                      navigate('.');
                     })
                   }
                 >

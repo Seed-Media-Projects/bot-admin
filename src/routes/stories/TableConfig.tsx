@@ -130,7 +130,7 @@ const Actions = ({ storyPack }: { storyPack: VkStoryPackItem }) => {
             onConfirm={() => {
               deleteStoryPackFX(storyPack.id).then(() => {
                 handleClose();
-                navigate('.', { replace: true });
+                navigate('.');
               });
             }}
             open={open}
@@ -143,7 +143,7 @@ const Actions = ({ storyPack }: { storyPack: VkStoryPackItem }) => {
             onConfirm={() => {
               stopStoryJobsPackFX(storyPack.id).then(() => {
                 setOpenStop(false);
-                navigate('.', { replace: true });
+                navigate('.');
               });
             }}
             open={openStop}
