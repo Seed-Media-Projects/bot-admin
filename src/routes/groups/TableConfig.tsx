@@ -76,7 +76,7 @@ const Actions = ({ group }: { group: VkGroupItem }) => {
             onConfirm={() => {
               deleteGroupFX(group.id).then(() => {
                 handleClose();
-                navigate('.');
+                navigate('.', { replace: true });
               });
             }}
             open={open}

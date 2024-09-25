@@ -161,7 +161,7 @@ const Actions = ({ postPack }: { postPack: VkPostPackItem }) => {
             onConfirm={() => {
               deletePostPackFX(postPack.id).then(() => {
                 handleClose();
-                navigate('.');
+                navigate('.', { replace: true });
               });
             }}
             open={open}
@@ -174,7 +174,7 @@ const Actions = ({ postPack }: { postPack: VkPostPackItem }) => {
             onConfirm={() => {
               stopPostJobsPackFX(postPack.id).then(() => {
                 setOpenStop(false);
-                navigate('.');
+                navigate('.', { replace: true });
               });
             }}
             open={openStop}

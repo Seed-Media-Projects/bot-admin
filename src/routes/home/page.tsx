@@ -12,7 +12,7 @@ const HomePage = () => {
 
   const navigate = useNavigate();
 
-  useInterval(() => navigate('.'), 15000);
+  useInterval(() => navigate('.', { replace: true }), 15000);
 
   return (
     <>

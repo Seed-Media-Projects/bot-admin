@@ -61,7 +61,7 @@ const Actions = ({ groupPack }: { groupPack: GroupPackItem }) => {
             onConfirm={() => {
               deleteGroupPackFX(groupPack.id).then(() => {
                 handleClose();
-                navigate('.');
+                navigate('.', { replace: true });
               });
             }}
             open={open}

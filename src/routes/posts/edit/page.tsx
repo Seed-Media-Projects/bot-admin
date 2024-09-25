@@ -48,7 +48,7 @@ const EditPostPackPage = () => {
   const isSpecificLoading = useUnit(deleteSpecificVkPostFX.pending);
   const navigate = useNavigate();
 
-  useInterval(() => navigate('.'), 5000);
+  useInterval(() => navigate('.', { replace: true }), 5000);
 
   // const navigation = useNavigation();
   // const isLoading = navigation.formData?.get('toAllGroups') != null;
@@ -143,7 +143,7 @@ const EditPostPackPage = () => {
                       groupId: Number(gpk),
                       vkPostId: postId,
                     }).then(() => {
-                      navigate('.');
+                      navigate('.', { replace: true });
                     })
                   }
                 >
@@ -580,7 +580,7 @@ const EditPostPackPage = () => {
                             groupId: Number(gpk),
                             vkPostId: postId,
                           }).then(() => {
-                            navigate('.');
+                            navigate('.', { replace: true });
                           })
                         }
                       >

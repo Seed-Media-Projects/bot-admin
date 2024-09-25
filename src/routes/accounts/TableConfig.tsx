@@ -71,7 +71,7 @@ const Actions = ({ account }: { account: AccountItem }) => {
             onConfirm={() => {
               deleteAccountFX(account.id).then(() => {
                 handleClose();
-                navigate('.');
+                navigate('.', { replace: true });
               });
             }}
             open={open}
