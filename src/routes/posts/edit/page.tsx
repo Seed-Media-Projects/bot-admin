@@ -78,14 +78,12 @@ const EditPostPackPage = () => {
           url: f.file.fileUrl,
         })),
       );
-      setMultipleDesc(
-        !!postData.post.settings.allGroupsText || !!objKeys(postData.post.settings.allGroupsText ?? {}).length,
-      );
+      setMultipleDesc(!postData.post.settings.allGroupsText && !!objKeys(postData.post.settings.groupsText ?? {}).length);
       setWithReplace(!!postData.replacementPost);
       if (postData.replacementPost) {
         setMultipleDesc2(
-          !!postData.replacementPost.settings.allGroupsText ||
-            !!objKeys(postData.replacementPost.settings.allGroupsText ?? {}).length,
+          !postData.replacementPost.settings.allGroupsText &&
+            !!objKeys(postData.replacementPost.settings.groupsText ?? {}).length,
         );
         setPostFiles2(
           postData.replacementPost.files.map(f => ({
