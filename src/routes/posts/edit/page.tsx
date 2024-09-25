@@ -81,7 +81,7 @@ const EditPostPackPage = () => {
       setMultipleDesc(!postData.post.settings.allGroupsText);
       setWithReplace(!!postData.replacementPost);
       if (postData.replacementPost) {
-        setMultipleDesc2(!postData.replacementPost.settings.allGroupsText);
+        setMultipleDesc2(!!objKeys(postData.replacementPost.settings.allGroupsText ?? {}).length);
         setPostFiles2(
           postData.replacementPost.files.map(f => ({
             fileName: f.file.name ?? 'file',
