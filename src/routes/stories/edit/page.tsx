@@ -2,22 +2,26 @@ import { FileInfo, useUploader } from '@core/files';
 import { getGroupPackFX, GroupPackDetail, GroupPackItem } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
 import { VkPostStatus } from '@core/posts';
-import { deleteSpecificVkStoryFX, VkStoryPackDetail, VkStoryStats } from '@core/stories';
+import { deleteSpecificVkStoryFX, getStoryPackStatsFX, VkStoryPackDetail, VkStoryStats } from '@core/stories';
 import { objKeys } from '@core/utils/mappings';
 import { useInterval } from '@core/utils/userInterval';
 import ClearIcon from '@mui/icons-material/Clear';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { LoadingButton } from '@mui/lab';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Avatar,
   Box,
   Button,
   CircularProgress,
   FormControlLabel,
   FormGroup,
   IconButton,
+  ListItemText,
   MenuItem,
   Switch,
   TextField,
@@ -35,21 +39,22 @@ import { storyTextOptions } from '../constants';
 import { editStoryPackLoader } from './loader';
 
 const EditStoryPackPage = () => {
-  const { groups, groupPacks, storyPack, stats } = useLoaderData() as {
+  const { groups, groupPacks, storyPack } = useLoaderData() as {
     groups: VkGroupItem[];
     groupPacks: GroupPackItem[];
 
     storyPack: VkStoryPackDetail | null;
-    stats: Record<number, VkStoryStats> | null;
   };
   const [postFiles, setPostFiles] = useState<FileInfo[]>([]);
   const [groupPackId, setGroupPackId] = useState<number | null>(null);
+  const [storyStats, setStoryStats] = useState<Record<number, VkStoryStats> | null>(null);
   const [groupPackDetail, setGroupPackDetail] = useState<GroupPackDetail | null>(null);
   const [multipleDesc, setMultipleDesc] = useState(false);
   const [postTarget, setPostTarget] = useState<'toAllGroups' | 'groupPacks' | 'group'>('groupPacks');
   const postUploader = useUploader({ onFinishUpload: f => setPostFiles([f]), maxFiles: 1 });
 
   const isSpecificLoading = useUnit(deleteSpecificVkStoryFX.pending);
+  const isStatsLoading = useUnit(getStoryPackStatsFX.pending);
   const isPostsFileUploading = !!objKeys(postUploader.progress).length;
 
   const navigate = useNavigate();
@@ -82,6 +87,12 @@ const EditStoryPackPage = () => {
       setMultipleDesc(!storyPack.settings.allGroupsText);
     }
   }, [storyPack]);
+
+  const loadStoryStats = () => {
+    if (storyPack) {
+      getStoryPackStatsFX(storyPack.id).then(r => setStoryStats(r));
+    }
+  };
 
   if (!storyPack) {
     return <Typography>Story not found</Typography>;
@@ -430,20 +441,35 @@ const EditStoryPackPage = () => {
           </TextField>
         </Box>
       </Form>
-      {stats && (
+      <LoadingButton variant="contained" loading={isStatsLoading} onClick={loadStoryStats}>
+        Загрузить статистику
+      </LoadingButton>
+      {storyStats && (
         <>
           <Typography mt={2} variant="h6" gutterBottom>
             Статистика
           </Typography>
           <Box my={2}>
             {objKeys(storyPack.settings.groupStoryStatus).map(gpk => {
-              const statsData = stats[gpk];
-
+              const statsData = storyStats[gpk];
+              const group = groups.find(g => g.id === Number(gpk));
               return (
-                <Box key={gpk}>
+                <Box key={gpk} mb={2}>
                   <Accordion>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
-                      {groups.find(g => g.id === Number(gpk))?.name}
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Avatar sx={{ mr: 1 }} src={group?.photo} />
+                        <ListItemText primary={group?.name} />
+                        <IconButton
+                          onClick={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.open(`https://vk.com/club${group?.groupId}`, '_blank');
+                          }}
+                        >
+                          <OpenInNewIcon />
+                        </IconButton>
+                      </Box>
                     </AccordionSummary>
                     <AccordionDetails>
                       <Typography>

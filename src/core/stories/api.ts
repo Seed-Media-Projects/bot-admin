@@ -8,9 +8,12 @@ export const getStoryPacksFX = createEffect(async () => {
   return data;
 });
 export const getStoryPackFX = createEffect(async (id: string) => {
-  const { data } = await AXPOSTER.get<{ storyPack: VkStoryPackDetail; stats: Record<number, VkStoryStats> }>(
-    `/admin/api/stories/${id}`,
-  );
+  const { data } = await AXPOSTER.get<VkStoryPackDetail>(`/admin/api/stories/${id}`);
+
+  return data;
+});
+export const getStoryPackStatsFX = createEffect(async (id: string) => {
+  const { data } = await AXPOSTER.get<Record<number, VkStoryStats>>(`/admin/api/stories/stats/${id}`);
 
   return data;
 });
