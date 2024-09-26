@@ -64,7 +64,7 @@ const CreateGroupPack = () => {
                     onClick={e => {
                       e.preventDefault();
                       e.stopPropagation();
-                      window.open(`https://vk.com/club${g.id}`, '_blank');
+                      window.open(`https://vk.com/club${g.groupId}`, '_blank');
                     }}
                   >
                     <OpenInNewIcon />
