@@ -1,6 +1,7 @@
 import { IntervalTypes, VkPostStatus } from '@core/posts';
 import { objKeys } from '@core/utils/mappings';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import DeleteIcon from '@mui/icons-material/Delete';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import DownloadingIcon from '@mui/icons-material/Downloading';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -32,6 +33,11 @@ export const postStatusBundle: Record<VkPostStatus, AvaStatusBundle> = {
     color: 'error',
     icon: ErrorIcon,
     tooltip: 'Failed',
+  },
+  [VkPostStatus.Deleted]: {
+    color: 'secondary',
+    icon: DeleteIcon,
+    tooltip: 'Deleted',
   },
 };
 

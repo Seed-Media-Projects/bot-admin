@@ -19,6 +19,7 @@ export enum VkPostStatus {
   Stopped = 'stopped',
   Success = 'success',
   Failed = 'failed',
+  Deleted = 'deleted',
 }
 
 export type GroupPostStatusInfo = {

@@ -555,7 +555,7 @@ const EditPostPackPage = () => {
             </Typography>
             <Box my={2}>
               {objKeys(postData.replacementPost?.settings.groupPostStatus ?? {}).map(gpk => {
-                const { status, error, postId } = postData.replacementPost?.settings.groupPostStatus?.[gpk] ?? {
+                const { status, error } = postData.replacementPost?.settings.groupPostStatus?.[gpk] ?? {
                   status: VkPostStatus.Success,
                 };
 
@@ -571,22 +571,6 @@ const EditPostPackPage = () => {
                         <Icon />
                       </Tooltip>
                     </CustomAvatar>
-                    {postId && postData.replacementPost && (
-                      <IconButton
-                        disabled={isSpecificLoading}
-                        onClick={() =>
-                          deleteSpecificVkPostFX({
-                            id: postData.replacementPost!.id,
-                            groupId: Number(gpk),
-                            vkPostId: postId,
-                          }).then(() => {
-                            navigate('.', { replace: true });
-                          })
-                        }
-                      >
-                        {isSpecificLoading ? <CircularProgress size={24} color="primary" /> : <DeleteIcon />}
-                      </IconButton>
-                    )}
                   </Box>
                 );
               })}
