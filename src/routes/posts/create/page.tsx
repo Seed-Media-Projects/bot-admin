@@ -3,14 +3,22 @@ import { getGroupPackFX, GroupPackDetail, GroupPackItem } from '@core/group-pack
 import { VkGroupItem } from '@core/groups';
 import { IntervalTypes } from '@core/posts';
 import { objKeys } from '@core/utils/mappings';
-import ClearIcon from '@mui/icons-material/Clear';
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import {
   Box,
   Button,
   CircularProgress,
   FormControlLabel,
   FormGroup,
-  IconButton,
   MenuItem,
   Switch,
   TextField,
@@ -18,9 +26,10 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
-import { intervalTypeOptions, postTargetOptions, privacyViewOptions } from '../constants';
+import { intervalTypeOptions, postTargetOptions } from '../constants';
 import { createPostPackAction } from './action';
 import { createPostPackLoader } from './loader';
+import { SortableFile } from './SortableFile';
 
 const CreatePostPackPage = () => {
   const { groups, groupPacks } = useLoaderData() as { groups: VkGroupItem[]; groupPacks: GroupPackItem[] };
@@ -34,6 +43,12 @@ const CreatePostPackPage = () => {
   const [postTarget, setPostTarget] = useState<'toAllGroups' | 'groupPacks' | 'group'>('groupPacks');
   const postUploader = useUploader({ onFinishUpload: f => setPostFiles(v => v.concat(f)) });
   const postUploader2 = useUploader({ onFinishUpload: f => setPostFiles2(v => v.concat(f)) });
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
   const navigation = useNavigation();
   const isLoading = navigation.formData?.get('toAllGroups') != null;
@@ -47,6 +62,31 @@ const CreatePostPackPage = () => {
       getGroupPackFX(groupPackId).then(r => setGroupPackDetail(r));
     }
   }, [groupPackId]);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      setPostFiles(items => {
+        const oldIndex = items.findIndex(v => v.id === active.id);
+        const newIndex = items.findIndex(v => v.id === over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+  const handleDragEnd2 = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      setPostFiles2(items => {
+        const oldIndex = items.findIndex(v => v.id === active.id);
+        const newIndex = items.findIndex(v => v.id === over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
 
   return (
     <Box
@@ -177,87 +217,13 @@ const CreatePostPackPage = () => {
           >
             {isPostsFileUploading ? <CircularProgress size={24} color="primary" /> : 'Добавить вложения'}
           </Button>
-          {postFiles.map(pf => (
-            <Box
-              key={pf.id}
-              sx={{
-                width: '100%',
-                padding: 1,
-                borderRadius: 2,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                border: '1px solid rgba(0, 0, 0, 0.23)',
-                gap: 2,
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {pf.fileType === 'video' ? (
-                  <Box
-                    width={50}
-                    height={50}
-                    sx={{
-                      border: '1px solid rgba(0, 0, 0, 0.23)',
-                      borderRadius: '4px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography>MP4</Typography>
-                  </Box>
-                ) : (
-                  <Box
-                    component="img"
-                    src={import.meta.env.VITE_SERVER_URL + pf.url}
-                    width={50}
-                    height={50}
-                    sx={{
-                      objectFit: 'contain',
-                      border: '1px solid rgba(0, 0, 0, 0.23)',
-                      borderRadius: '4px',
-                      overflow: 'hidden',
-                    }}
-                  />
-                )}
-                <Typography noWrap sx={{ maxWidth: 200 }}>
-                  {pf.fileName}
-                </Typography>
-              </Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '.25rem' }}>
-                {pf.fileType === 'video' ? (
-                  <TextField
-                    margin="normal"
-                    select
-                    label="Кто видит"
-                    value={pf.privacyView ?? 'all'}
-                    onChange={e =>
-                      setPostFiles(f =>
-                        f.map(all =>
-                          all.id === pf.id
-                            ? {
-                                ...all,
-                                privacyView: e.target.value as 'all' | 'members',
-                              }
-                            : all,
-                        ),
-                      )
-                    }
-                  >
-                    {privacyViewOptions.map(o => (
-                      <MenuItem key={o.value} value={o.value}>
-                        {o.title}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                ) : null}
-                <IconButton onClick={() => setPostFiles(f => f.filter(all => all.id !== pf.id))}>
-                  <ClearIcon />
-                </IconButton>
-              </Box>
-            </Box>
-          ))}
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={postFiles} strategy={verticalListSortingStrategy}>
+              {postFiles.map(pf => (
+                <SortableFile key={pf.id} fileInfo={pf} setPostFiles={setPostFiles} />
+              ))}
+            </SortableContext>
+          </DndContext>
         </Box>
 
         <FormGroup>
@@ -398,86 +364,13 @@ const CreatePostPackPage = () => {
               >
                 {isPostsFileUploading2 ? <CircularProgress size={24} color="primary" /> : 'Добавить вложения'}
               </Button>
-              {postFiles2.map(pf => (
-                <Box
-                  key={pf.id}
-                  sx={{
-                    width: '100%',
-                    padding: 1,
-                    borderRadius: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    border: '1px solid rgba(0, 0, 0, 0.23)',
-                    gap: 2,
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {pf.fileType === 'video' ? (
-                      <Box
-                        width={50}
-                        height={50}
-                        sx={{
-                          border: '1px solid rgba(0, 0, 0, 0.23)',
-                          borderRadius: '4px',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Typography>MP4</Typography>
-                      </Box>
-                    ) : (
-                      <Box
-                        component="img"
-                        src={import.meta.env.VITE_SERVER_URL + pf.url}
-                        width={50}
-                        height={50}
-                        sx={{
-                          objectFit: 'contain',
-                          border: '1px solid rgba(0, 0, 0, 0.23)',
-                          borderRadius: '4px',
-                          overflow: 'hidden',
-                        }}
-                      />
-                    )}
-                    <Typography noWrap sx={{ maxWidth: 200 }}>
-                      {pf.fileName}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '.25rem' }}>
-                    {pf.fileType === 'video' ? (
-                      <TextField
-                        margin="normal"
-                        select
-                        label="Кто видит"
-                        value={pf.privacyView ?? 'all'}
-                        onChange={e =>
-                          setPostFiles2(f =>
-                            f.map(all =>
-                              all.id === pf.id
-                                ? {
-                                    ...all,
-                                    privacyView: e.target.value as 'all' | 'members',
-                                  }
-                                : all,
-                            ),
-                          )
-                        }
-                      >
-                        {privacyViewOptions.map(o => (
-                          <MenuItem key={o.value} value={o.value}>
-                            {o.title}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    ) : null}
-                    <IconButton onClick={() => setPostFiles2(f => f.filter(all => all.id !== pf.id))}>
-                      <ClearIcon />
-                    </IconButton>
-                  </Box>
-                </Box>
-              ))}
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd2}>
+                <SortableContext items={postFiles2} strategy={verticalListSortingStrategy}>
+                  {postFiles2.map(pf => (
+                    <SortableFile key={pf.id} fileInfo={pf} setPostFiles={setPostFiles2} />
+                  ))}
+                </SortableContext>
+              </DndContext>
             </Box>
             <FormGroup>
               <FormControlLabel control={<Switch />} label="Карусель вложений" name="replaceItemPost.carousel" />

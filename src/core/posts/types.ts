@@ -58,6 +58,7 @@ export type VkPostFile = {
   vk_post_pack_id: string;
   file_storage_id: number;
   file: BaseFileInfo;
+  position: number;
 };
 
 export type VkPostPackDetail = {
@@ -104,6 +105,7 @@ export type PostFileDto = {
   fileId: number;
   fileType: 'img' | 'video';
   privacyView: 'all' | 'members' | null;
+  position: number;
 };
 
 export type CreatePostDto = {

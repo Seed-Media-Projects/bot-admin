@@ -49,10 +49,11 @@ export const createPostPackAction = async ({ request }: LoaderFunctionArgs) => {
     postDate: payload.postDate ? dayjs(payload.postDate.toString()).utc().format() : null,
     groupPackId: payload.groupPackId ? Number(payload.groupPackId) : null,
     groupId: payload.groupId ? Number(payload.groupId) : null,
-    fileIds: (JSON.parse(payload.postFiles.toString()) as FileInfo[]).map(f => ({
+    fileIds: (JSON.parse(payload.postFiles.toString()) as FileInfo[]).map((f, index) => ({
       fileId: f.id,
       fileType: f.fileType,
       privacyView: null,
+      position: index + 1,
     })),
     replaceItemPost: payload.replaceInterval
       ? {
@@ -76,10 +77,11 @@ export const createPostPackAction = async ({ request }: LoaderFunctionArgs) => {
           postDate: null,
           groupPackId: payload.groupPackId ? Number(payload.groupPackId) : null,
           groupId: payload.groupId ? Number(payload.groupId) : null,
-          fileIds: (JSON.parse(payload['replaceItemPost.postFiles'].toString()) as FileInfo[]).map(f => ({
+          fileIds: (JSON.parse(payload['replaceItemPost.postFiles'].toString()) as FileInfo[]).map((f, index) => ({
             fileId: f.id,
             fileType: f.fileType,
             privacyView: null,
+            position: index + 1,
           })),
           replaceItemPost: null,
         }
