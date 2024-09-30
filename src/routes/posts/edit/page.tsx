@@ -125,7 +125,7 @@ const EditPostPackPage = () => {
           const fixStatus = (status as unknown as string) === 'succes' ? VkPostStatus.Success : status;
 
           const Icon = postStatusBundle[fixStatus].icon;
-
+          const showDeleteBtn = !!postId && fixStatus !== VkPostStatus.Deleted;
           return (
             <Box key={gpk} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography>{groups.find(g => g.id === Number(gpk))?.name}</Typography>
@@ -134,7 +134,7 @@ const EditPostPackPage = () => {
                   <Icon />
                 </Tooltip>
               </CustomAvatar>
-              {postId && (
+              {showDeleteBtn && (
                 <IconButton
                   disabled={isSpecificLoading}
                   onClick={() =>

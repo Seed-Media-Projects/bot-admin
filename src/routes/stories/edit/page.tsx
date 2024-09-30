@@ -123,6 +123,8 @@ const EditStoryPackPage = () => {
 
           const Icon = postStatusBundle[fixStatus].icon;
 
+          const showDeleteBtn = !!storyId && fixStatus !== VkPostStatus.Deleted;
+
           return (
             <Box key={gpk} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography>{groups.find(g => g.id === Number(gpk))?.name}</Typography>
@@ -131,7 +133,7 @@ const EditStoryPackPage = () => {
                   <Icon />
                 </Tooltip>
               </CustomAvatar>
-              {storyId && (
+              {showDeleteBtn && (
                 <IconButton
                   disabled={isSpecificLoading}
                   onClick={() =>
