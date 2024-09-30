@@ -40,7 +40,6 @@ export const useUploader = ({
       'image/jpeg': [],
       'image/jpg': [],
       'image/gif': [],
-      'image/svg+xml': [],
       'video/mp4': [],
     },
     maxSize: oneMB * 50,
