@@ -69,6 +69,18 @@ const router = createBrowserRouter([
         path: 'search-wall',
         lazy: () => import('@routes/search-wall'),
       },
+      {
+        path: 'schedule',
+        lazy: () => import('@routes/schedule'),
+      },
+      {
+        path: 'schedule/create',
+        lazy: () => import('@routes/schedule/create'),
+      },
+      {
+        path: 'schedule/:id',
+        lazy: () => import('@routes/schedule/edit'),
+      },
     ],
   },
   {

@@ -1,58 +1,52 @@
-import { AccountItem } from '@core/accounts';
-import { deleteGroupFX, VkGroupItem } from '@core/groups';
+import { deleteScheduleFX, ScheduleItem } from '@core/schedule';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton, Typography } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { ActionModal } from '@ui/modal/ActionModal';
 import { actionsConfig, RowOptionsIcons } from '@ui/table/RowOptions';
-import { avatarImgColumn, typographyColumn, typographyDateColumn } from '@ui/table/config-elements';
+import { typographyColumn } from '@ui/table/config-elements';
 import { useUnit } from 'effector-react';
 import { useState } from 'react';
 import { ColumnShape } from 'react-base-table';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-export const tableGroupsConfig: ColumnShape<VkGroupItem>[] = [
+export const tableSchedulesConfig: ColumnShape<ScheduleItem>[] = [
   {
     title: 'Id',
     ...typographyColumn({ dataKey: 'id' }),
     width: 60,
   },
   {
-    title: 'Ava',
-    ...avatarImgColumn({ dataKey: 'photo' }),
-    width: 40,
-  },
-  {
     title: 'Name',
     ...typographyColumn({ dataKey: 'name' }),
   },
   {
-    title: 'Created',
-    ...typographyDateColumn({ dataKey: 'created' }),
-  },
-  {
-    title: 'Created by',
-    key: 'vkUserId',
-    width: 200,
+    title: 'Time',
+    key: 'scheduleData',
+    width: 600,
     sortable: false,
-    cellRenderer: ({ rowData }) => <CreatedBy group={rowData} />,
+    cellRenderer: ({ rowData }) => {
+      return (
+        <Box display="flex" gap={1} sx={{ overflowX: 'auto' }}>
+          {rowData.scheduleData.times.map(arrItem => (
+            <Typography sx={{ whiteSpace: 'normal' }} key={`${arrItem}`}>
+              {arrItem}
+            </Typography>
+          ))}
+        </Box>
+      );
+    },
   },
   {
     ...actionsConfig(),
-    cellRenderer: ({ rowData }) => <Actions group={rowData} />,
+    cellRenderer: ({ rowData }) => <Actions schedule={rowData} />,
   },
 ];
 
-const CreatedBy = ({ group }: { group: VkGroupItem }) => {
-  const { accounts } = useLoaderData() as { accounts: AccountItem[] };
-
-  return <Typography>{accounts.find(a => a.vkUserId === group.vkUserId)?.vkInfo?.name}</Typography>;
-};
-
-const Actions = ({ group }: { group: VkGroupItem }) => {
+const Actions = ({ schedule }: { schedule: ScheduleItem }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const loading = useUnit(deleteGroupFX.pending);
+  const loading = useUnit(deleteScheduleFX.pending);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -62,7 +56,7 @@ const Actions = ({ group }: { group: VkGroupItem }) => {
         {
           icon: EditIcon,
           name: 'Edit',
-          link: `/groups/${group.id}`,
+          link: `/schedule/${schedule.id}`,
         },
       ]}
       deleteBtn={
@@ -74,13 +68,13 @@ const Actions = ({ group }: { group: VkGroupItem }) => {
             loading={loading}
             onClose={handleClose}
             onConfirm={() => {
-              deleteGroupFX(group.id).then(() => {
+              deleteScheduleFX(schedule.id).then(() => {
                 handleClose();
                 navigate('.', { replace: true });
               });
             }}
             open={open}
-            title={`Delete group: ${group.name}`}
+            title={`Delete schedule: ${schedule.name}`}
             subtitle="Are you sure?"
           />
         </>

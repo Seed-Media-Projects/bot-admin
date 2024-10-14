@@ -1,6 +1,7 @@
 import { LS, LSKeys } from '@core/local-store';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AdsClickIcon from '@mui/icons-material/AdsClick';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import GroupsIcon from '@mui/icons-material/Groups';
 import HomeIcon from '@mui/icons-material/Home';
@@ -28,7 +29,6 @@ import { useState } from 'react';
 import { LoaderFunctionArgs, Outlet, redirect, useFetcher } from 'react-router-dom';
 import { $token } from '../core/login/store';
 import { $snacks, closeSnack } from '../core/snacks/store';
-
 export const Component = () => {
   const [open, setOpen] = useState(false);
   const hasToken = !!useUnit($token);
@@ -136,6 +136,16 @@ export const Component = () => {
                       <AdsClickIcon />
                     </ListItemIcon>
                     <ListItemText primary="Сбор рекламы" />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+              <Link href="/schedule" sx={{ textDecoration: 'none', color: 'MenuText' }}>
+                <ListItem disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <CalendarMonthIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Расписание" />
                   </ListItemButton>
                 </ListItem>
               </Link>
