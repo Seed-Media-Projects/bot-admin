@@ -77,7 +77,7 @@ const CreateMassPostingPage = () => {
               ? dayjs(`${currentDate} ${scheduleTimeByIndex}`, 'YYYY-MM-DD HH:mm').utc().format()
               : '',
 
-        groupsText: '',
+        groupsText: allText,
       };
       upItems = upItems.concat(newItem);
       upOrdItems = upOrdItems.concat({
