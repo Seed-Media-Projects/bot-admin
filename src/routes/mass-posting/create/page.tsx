@@ -63,7 +63,7 @@ const CreateMassPostingPage = () => {
             fileUrl: file.url,
             fileType: file.fileType,
             position: 1,
-            privacyView: file.privacyView ?? 'all',
+            privacyView: allPW,
             fileName: file.fileName,
           },
         ],
