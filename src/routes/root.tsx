@@ -8,11 +8,13 @@ import HomeIcon from '@mui/icons-material/Home';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import MenuIcon from '@mui/icons-material/Menu';
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
+import PostAddIcon from '@mui/icons-material/PostAdd';
 import {
   Alert,
   AppBar,
   Box,
   Button,
+  CircularProgress,
   Drawer,
   IconButton,
   Link,
@@ -26,7 +28,7 @@ import {
 } from '@mui/material';
 import { useUnit } from 'effector-react';
 import { useState } from 'react';
-import { LoaderFunctionArgs, Outlet, redirect, useFetcher } from 'react-router-dom';
+import { LoaderFunctionArgs, Outlet, redirect, useFetcher, useNavigation } from 'react-router-dom';
 import { $token } from '../core/login/store';
 import { $snacks, closeSnack } from '../core/snacks/store';
 export const Component = () => {
@@ -34,6 +36,7 @@ export const Component = () => {
   const hasToken = !!useUnit($token);
   const { snacks } = useUnit($snacks);
   const fetcher = useFetcher();
+  const navigation = useNavigation();
 
   const openMenu = () => {
     setOpen(true);
@@ -113,7 +116,7 @@ export const Component = () => {
                 <ListItem disablePadding>
                   <ListItemButton>
                     <ListItemIcon>
-                      <DynamicFeedIcon />
+                      <PostAddIcon />
                     </ListItemIcon>
                     <ListItemText primary="Посты" />
                   </ListItemButton>
@@ -149,11 +152,40 @@ export const Component = () => {
                   </ListItemButton>
                 </ListItem>
               </Link>
+              <Link href="/mass-posting" sx={{ textDecoration: 'none', color: 'MenuText' }}>
+                <ListItem disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <DynamicFeedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Массовый постинг" />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
             </List>
           </Box>
         </Drawer>
       </Box>
-      <Box sx={{ padding: 2 }}>
+      <Box sx={{ padding: 2, position: 'relative', minHeight: 'calc(100dvh - 64px)' }}>
+        {navigation.state === 'loading' && (
+          <Box
+            sx={{
+              position: 'absolute',
+              padding: '2rem',
+              top: '50%',
+              left: '50%',
+              zIndex: 1,
+              transform: 'translate(-50%, -50%)',
+              backgroundColor: ' #000000a3',
+              borderRadius: '1rem',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <CircularProgress color="info" />
+          </Box>
+        )}
         <Outlet />
       </Box>
       {snacks.map(snack => (

@@ -1,11 +1,11 @@
-import { FileInfo } from '@core/files';
+import { deleteFileFX, FileInfo, FilePrivacyView } from '@core/files';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import ClearIcon from '@mui/icons-material/Clear';
-import { Box, IconButton, MenuItem, TextField, Typography } from '@mui/material';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import { Box, Button, IconButton, MenuItem, TextField, Typography } from '@mui/material';
 import { SetStateAction } from 'react';
 import { privacyViewOptions } from '../constants';
-
 type Props = {
   fileInfo: FileInfo;
   setPostFiles: (value: SetStateAction<FileInfo[]>) => void;
@@ -20,10 +20,7 @@ export const SortableFile = ({ fileInfo, setPostFiles }: Props) => {
   };
   return (
     <Box
-      ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
       sx={{
         width: '100%',
         padding: 1,
@@ -33,17 +30,32 @@ export const SortableFile = ({ fileInfo, setPostFiles }: Props) => {
         justifyContent: 'space-between',
         border: '1px solid rgba(0, 0, 0, 0.23)',
         gap: 2,
-        cursor: 'grab',
-        ':active': {
-          cursor: 'grabbing',
-        },
+
+        position: 'relative',
       }}
     >
+      <Button
+        sx={{
+          position: 'absolute',
+          top: 8,
+          right: 8,
+          cursor: 'grab',
+          ':active': {
+            cursor: 'grabbing',
+          },
+        }}
+        variant="contained"
+        ref={setNodeRef}
+        {...attributes}
+        {...listeners}
+      >
+        <DragIndicatorIcon />
+      </Button>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         {fileInfo.fileType === 'video' ? (
           <Box
-            width={50}
-            height={50}
+            width={250}
+            height={250}
             sx={{
               border: '1px solid rgba(0, 0, 0, 0.23)',
               borderRadius: '4px',
@@ -51,15 +63,21 @@ export const SortableFile = ({ fileInfo, setPostFiles }: Props) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}
-          >
-            <Typography>MP4</Typography>
-          </Box>
+            component="video"
+            controls
+            muted
+            loop
+            playsInline
+            crossOrigin="anonymous"
+            autoPlay
+            src={import.meta.env.VITE_SERVER_URL + fileInfo.url}
+          />
         ) : (
           <Box
             component="img"
             src={import.meta.env.VITE_SERVER_URL + fileInfo.url}
-            width={50}
-            height={50}
+            width={250}
+            height={250}
             sx={{
               objectFit: 'contain',
               border: '1px solid rgba(0, 0, 0, 0.23)',
@@ -68,9 +86,7 @@ export const SortableFile = ({ fileInfo, setPostFiles }: Props) => {
             }}
           />
         )}
-        <Typography noWrap sx={{ maxWidth: 200 }}>
-          {fileInfo.fileName}
-        </Typography>
+        <Typography noWrap>{fileInfo.fileName}</Typography>
       </Box>
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '.25rem' }}>
@@ -86,7 +102,7 @@ export const SortableFile = ({ fileInfo, setPostFiles }: Props) => {
                   all.id === fileInfo.id
                     ? {
                         ...all,
-                        privacyView: e.target.value as 'all' | 'members',
+                        privacyView: e.target.value as FilePrivacyView,
                       }
                     : all,
                 ),
@@ -100,7 +116,14 @@ export const SortableFile = ({ fileInfo, setPostFiles }: Props) => {
             ))}
           </TextField>
         ) : null}
-        <IconButton onClick={() => setPostFiles(f => f.filter(all => all.id !== fileInfo.id))}>
+        <IconButton
+          onClick={async e => {
+            e.preventDefault();
+            e.stopPropagation();
+            await deleteFileFX(fileInfo.id);
+            setPostFiles(f => f.filter(all => all.id !== fileInfo.id));
+          }}
+        >
           <ClearIcon />
         </IconButton>
       </Box>

@@ -1,4 +1,5 @@
 import { Box, Button, CircularProgress, Modal, Typography } from '@mui/material';
+import { ReactNode } from 'react';
 
 type Props = {
   open: boolean;
@@ -6,7 +7,8 @@ type Props = {
   onConfirm: () => void;
   loading: boolean;
   title: string;
-  subtitle: string;
+  subtitle: ReactNode;
+  confirmColor?: 'secondary' | 'primary' | 'success' | 'error' | 'info' | 'warning';
 };
 
 const style = {
@@ -21,21 +23,25 @@ const style = {
   p: 4,
 };
 
-export const ActionModal = ({ loading, onClose, onConfirm, open, subtitle, title }: Props) => {
+export const ActionModal = ({ loading, onClose, onConfirm, open, subtitle, title, confirmColor = 'error' }: Props) => {
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
           {title}
         </Typography>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          {subtitle}
-        </Typography>
+        {typeof subtitle === 'string' ? (
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            {subtitle}
+          </Typography>
+        ) : (
+          subtitle
+        )}
         <Box display="flex" justifyContent="center" mt={2} gap={2}>
           <Button onClick={onClose} variant="contained" disabled={loading} color="secondary">
             Cancel
           </Button>
-          <Button onClick={onConfirm} disabled={loading} variant="contained" color="error">
+          <Button onClick={onConfirm} disabled={loading} variant="contained" color={confirmColor}>
             {loading ? <CircularProgress size={24} color="primary" /> : 'confirm'}
           </Button>
         </Box>

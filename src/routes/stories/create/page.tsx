@@ -1,4 +1,4 @@
-import { FileInfo, useUploader } from '@core/files';
+import { deleteFileFX, FileInfo, useUploader } from '@core/files';
 import { getGroupPackFX, GroupPackDetail, GroupPackItem } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
 import { IntervalTypes } from '@core/posts';
@@ -17,6 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { intervalTypeOptions, postTargetOptions } from '@routes/posts/constants';
+import { useUnit } from 'effector-react';
 import { Fragment, useEffect, useState } from 'react';
 import { Form, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
 import { storyTextOptions } from '../constants';
@@ -31,6 +32,7 @@ const CreateStoryPackPage = () => {
   const [multipleDesc, setMultipleDesc] = useState(false);
   const [postTarget, setPostTarget] = useState<'toAllGroups' | 'groupPacks' | 'group'>('groupPacks');
   const postUploader = useUploader({ onFinishUpload: f => setPostFiles([f]), maxFiles: 1 });
+  const isDeleteLoading = useUnit(deleteFileFX.pending);
 
   const navigation = useNavigation();
   const isLoading = navigation.formData?.get('toAllGroups') != null;
@@ -189,7 +191,7 @@ const CreateStoryPackPage = () => {
           <Button
             sx={{ width: 'max-content' }}
             variant="contained"
-            disabled={isPostsFileUploading || isLoading}
+            disabled={isPostsFileUploading || isLoading || isDeleteLoading}
             onClick={postUploader.open}
           >
             {isPostsFileUploading ? <CircularProgress size={24} color="primary" /> : 'Добавить файл'}
@@ -243,7 +245,12 @@ const CreateStoryPackPage = () => {
               </Box>
 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '.25rem' }}>
-                <IconButton onClick={() => setPostFiles(f => f.filter(all => all.id !== pf.id))}>
+                <IconButton
+                  onClick={async () => {
+                    await deleteFileFX(pf.id);
+                    setPostFiles(f => f.filter(all => all.id !== pf.id));
+                  }}
+                >
                   <ClearIcon />
                 </IconButton>
               </Box>
@@ -260,6 +267,9 @@ const CreateStoryPackPage = () => {
           slotProps={{
             inputLabel: {
               shrink: true,
+            },
+            htmlInput: {
+              min: new Date().toISOString().slice(0, 16),
             },
           }}
         />

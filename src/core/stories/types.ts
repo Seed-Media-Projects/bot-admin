@@ -1,4 +1,4 @@
-import { BaseFileInfo } from '@core/files';
+import { BaseFileInfo, FileType } from '@core/files';
 import { GroupPackDetail } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
 import { IntervalObj, IntervalTypes, VkPostStatus } from '@core/posts';
@@ -31,7 +31,7 @@ export type VkStoryPackItem = {
   deleted: string | null;
   vk_group_pack_id: number | null;
   vk_user_group_id: number | null;
-  fileType: 'img' | 'video';
+  fileType: FileType;
 };
 
 export type VkStoryPackDetail = {
@@ -45,7 +45,7 @@ export type VkStoryPackDetail = {
   groupPack: GroupPackDetail | null;
   group: VkGroupItem | null;
   file: BaseFileInfo;
-  fileType: 'img' | 'video';
+  fileType: FileType;
 };
 
 export type StorySettingsDto = {
@@ -57,7 +57,7 @@ export type StorySettingsDto = {
 
 export type StoryFileDto = {
   fileId: number;
-  fileType: 'img' | 'video';
+  fileType: FileType;
 };
 
 export type CreateStoryDto = {

@@ -9,9 +9,11 @@ const oneMB = 1048576;
 
 export const useUploader = ({
   onFinishUpload,
+  onFinishUploadAll,
   maxFiles = 10,
 }: {
-  onFinishUpload: (f: FileInfo) => void;
+  onFinishUpload?: (f: FileInfo) => void;
+  onFinishUploadAll?: (files: FileInfo[]) => void;
   maxFiles?: number;
 }) => {
   const loading = useUnit(uploadFileFX.pending);
@@ -30,7 +32,9 @@ export const useUploader = ({
     const prgs = progress;
     delete prgs[file.name];
     setProgress(prgs);
-    onFinishUpload(data);
+    onFinishUpload?.(data);
+
+    return data;
   };
 
   const { open, getInputProps } = useDropzone({
@@ -48,7 +52,8 @@ export const useUploader = ({
     multiple: maxFiles > 1,
     onDrop: async (acceptedFiles: File[]) => {
       try {
-        await Promise.all(acceptedFiles.map(f => uploadFn(f)));
+        const allFiles = await Promise.all(acceptedFiles.map(f => uploadFn(f)));
+        onFinishUploadAll?.(allFiles);
       } catch (error) {
         console.error(error);
         setProgress({});

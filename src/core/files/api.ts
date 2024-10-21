@@ -13,6 +13,9 @@ export const uploadFileFX = createEffect(async (config: ParamsConfig) => {
 
   return fileInfo;
 });
+export const deleteFileFX = createEffect(async (fileId: number) => {
+  await AXPOSTER.delete(`/admin/api/filestorage/file/${fileId}`);
+});
 
 const fileUploadOnDrop = async ({ file, onUploadProgress }: ParamsConfig) => {
   const formData = new FormData();

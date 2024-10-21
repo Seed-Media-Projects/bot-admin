@@ -1,4 +1,4 @@
-import { FileInfo, useUploader } from '@core/files';
+import { FileInfo, FilePrivacyView, useUploader } from '@core/files';
 import { getGroupPackFX, GroupPackDetail, GroupPackItem } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
 import { deleteSpecificVkPostFX, VkPostPackDetailResponse, VkPostStatus } from '@core/posts';
@@ -49,9 +49,6 @@ const EditPostPackPage = () => {
   const navigate = useNavigate();
 
   useInterval(() => navigate('.', { replace: true }), 5000);
-
-  // const navigation = useNavigation();
-  // const isLoading = navigation.formData?.get('toAllGroups') != null;
 
   const actionData = useActionData() as { error: string } | undefined;
   const isPostsFileUploading = !!objKeys(postUploader.progress).length;
@@ -108,7 +105,7 @@ const EditPostPackPage = () => {
         marginTop: 8,
         display: 'flex',
         flexDirection: 'column',
-        maxWidth: 500,
+        maxWidth: '80vw',
         margin: 'auto',
       }}
     >
@@ -326,8 +323,8 @@ const EditPostPackPage = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 {pf.fileType === 'video' ? (
                   <Box
-                    width={50}
-                    height={50}
+                    width={250}
+                    height={250}
                     sx={{
                       border: '1px solid rgba(0, 0, 0, 0.23)',
                       borderRadius: '4px',
@@ -335,15 +332,21 @@ const EditPostPackPage = () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}
-                  >
-                    <Typography>MP4</Typography>
-                  </Box>
+                    component="video"
+                    controls
+                    muted
+                    loop
+                    playsInline
+                    crossOrigin="anonymous"
+                    autoPlay
+                    src={import.meta.env.VITE_SERVER_URL + pf.url}
+                  />
                 ) : (
                   <Box
                     component="img"
                     src={import.meta.env.VITE_SERVER_URL + pf.url}
-                    width={50}
-                    height={50}
+                    width={250}
+                    height={250}
                     sx={{
                       objectFit: 'contain',
                       border: '1px solid rgba(0, 0, 0, 0.23)',
@@ -352,9 +355,7 @@ const EditPostPackPage = () => {
                     }}
                   />
                 )}
-                <Typography noWrap sx={{ maxWidth: 200 }}>
-                  {pf.fileName}
-                </Typography>
+                <Typography noWrap>{pf.fileName}</Typography>
               </Box>
 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '.25rem' }}>
@@ -371,7 +372,7 @@ const EditPostPackPage = () => {
                           all.id === pf.id
                             ? {
                                 ...all,
-                                privacyView: e.target.value as 'all' | 'members',
+                                privacyView: e.target.value as FilePrivacyView,
                               }
                             : all,
                         ),
@@ -689,8 +690,8 @@ const EditPostPackPage = () => {
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     {pf.fileType === 'video' ? (
                       <Box
-                        width={50}
-                        height={50}
+                        width={250}
+                        height={250}
                         sx={{
                           border: '1px solid rgba(0, 0, 0, 0.23)',
                           borderRadius: '4px',
@@ -698,15 +699,21 @@ const EditPostPackPage = () => {
                           justifyContent: 'center',
                           alignItems: 'center',
                         }}
-                      >
-                        <Typography>MP4</Typography>
-                      </Box>
+                        component="video"
+                        controls
+                        muted
+                        loop
+                        playsInline
+                        crossOrigin="anonymous"
+                        autoPlay
+                        src={import.meta.env.VITE_SERVER_URL + pf.url}
+                      />
                     ) : (
                       <Box
                         component="img"
                         src={import.meta.env.VITE_SERVER_URL + pf.url}
-                        width={50}
-                        height={50}
+                        width={250}
+                        height={250}
                         sx={{
                           objectFit: 'contain',
                           border: '1px solid rgba(0, 0, 0, 0.23)',
@@ -715,9 +722,7 @@ const EditPostPackPage = () => {
                         }}
                       />
                     )}
-                    <Typography noWrap sx={{ maxWidth: 200 }}>
-                      {pf.fileName}
-                    </Typography>
+                    <Typography noWrap>{pf.fileName}</Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: '.25rem' }}>
                     {pf.fileType === 'video' ? (
@@ -733,7 +738,7 @@ const EditPostPackPage = () => {
                               all.id === pf.id
                                 ? {
                                     ...all,
-                                    privacyView: e.target.value as 'all' | 'members',
+                                    privacyView: e.target.value as FilePrivacyView,
                                   }
                                 : all,
                             ),

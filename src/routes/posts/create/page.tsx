@@ -1,4 +1,4 @@
-import { FileInfo, useUploader } from '@core/files';
+import { deleteFileFX, FileInfo, useUploader } from '@core/files';
 import { getGroupPackFX, GroupPackDetail, GroupPackItem } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
 import { IntervalTypes } from '@core/posts';
@@ -24,6 +24,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useUnit } from 'effector-react';
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
 import { intervalTypeOptions, postTargetOptions } from '../constants';
@@ -43,6 +44,8 @@ const CreatePostPackPage = () => {
   const [postTarget, setPostTarget] = useState<'toAllGroups' | 'groupPacks' | 'group'>('groupPacks');
   const postUploader = useUploader({ onFinishUpload: f => setPostFiles(v => v.concat(f)) });
   const postUploader2 = useUploader({ onFinishUpload: f => setPostFiles2(v => v.concat(f)) });
+  const isDeleteLoading = useUnit(deleteFileFX.pending);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -95,7 +98,7 @@ const CreatePostPackPage = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        maxWidth: 500,
+        maxWidth: '80vw',
         margin: 'auto',
       }}
     >
@@ -212,7 +215,7 @@ const CreatePostPackPage = () => {
           <Button
             sx={{ width: 'max-content' }}
             variant="contained"
-            disabled={isPostsFileUploading || isLoading}
+            disabled={isPostsFileUploading || isLoading || isDeleteLoading}
             onClick={postUploader.open}
           >
             {isPostsFileUploading ? <CircularProgress size={24} color="primary" /> : 'Добавить вложения'}
@@ -240,6 +243,9 @@ const CreatePostPackPage = () => {
           slotProps={{
             inputLabel: {
               shrink: true,
+            },
+            htmlInput: {
+              min: new Date().toISOString().slice(0, 16),
             },
           }}
         />

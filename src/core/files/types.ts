@@ -1,9 +1,9 @@
 export type FileInfo = {
   id: number;
   url: string;
-  fileType: 'img' | 'video';
+  fileType: FileType;
   fileName: string;
-  privacyView: 'all' | 'members' | null;
+  privacyView: FilePrivacyView | null;
 };
 
 export type BaseFileInfo = {
@@ -12,3 +12,6 @@ export type BaseFileInfo = {
   name: string | null;
   deleted: string | null;
 };
+
+export type FileType = 'img' | 'video';
+export type FilePrivacyView = 'all' | 'members';

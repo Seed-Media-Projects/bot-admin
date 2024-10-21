@@ -1,4 +1,4 @@
-import { BaseFileInfo } from '@core/files';
+import { BaseFileInfo, FilePrivacyView, FileType } from '@core/files';
 import { GroupPackDetail } from '@core/group-packs';
 import { VkGroupItem } from '@core/groups';
 
@@ -53,8 +53,8 @@ export type VkPostPackItem = {
 
 export type VkPostFile = {
   id: string;
-  privacyView: 'all' | 'members' | null;
-  fileType: 'img' | 'video';
+  privacyView: FilePrivacyView | null;
+  fileType: FileType;
   vk_post_pack_id: string;
   file_storage_id: number;
   file: BaseFileInfo;
@@ -103,8 +103,8 @@ export type PostIntervalsDto = {
 
 export type PostFileDto = {
   fileId: number;
-  fileType: 'img' | 'video';
-  privacyView: 'all' | 'members' | null;
+  fileType: FileType;
+  privacyView: FilePrivacyView | null;
   position: number;
 };
 
