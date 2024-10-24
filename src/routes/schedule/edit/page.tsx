@@ -1,5 +1,6 @@
 import { ScheduleDetail } from '@core/schedule';
-import { Box, Button, CircularProgress, TextField, Typography } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, Button, CircularProgress, IconButton, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { Form, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
 import { editScheduleAction } from './action';
@@ -56,6 +57,13 @@ const EditSchedule = () => {
             slotProps={{
               inputLabel: {
                 shrink: true,
+              },
+              input: {
+                endAdornment: (
+                  <IconButton onClick={() => setTimes(tAll => tAll.filter((_, tIndex) => index !== tIndex))}>
+                    <DeleteIcon />
+                  </IconButton>
+                ),
               },
             }}
           />
