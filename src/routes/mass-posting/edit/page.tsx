@@ -85,7 +85,16 @@ const EditMassPostingPage = () => {
         </TextField>
 
         {postTarget === 'groupPacks' ? (
-          <TextField margin="normal" disabled required fullWidth select label="Group packs" name="groupPackId">
+          <TextField
+            margin="normal"
+            defaultValue={massPostingData.groupPack?.id}
+            disabled
+            required
+            fullWidth
+            select
+            label="Group packs"
+            name="groupPackId"
+          >
             {groupPacks.map(o => (
               <MenuItem key={o.id} value={o.id}>
                 {o.name}
@@ -94,7 +103,16 @@ const EditMassPostingPage = () => {
           </TextField>
         ) : null}
         {postTarget === 'group' ? (
-          <TextField margin="normal" disabled required fullWidth select label="Group" name="groupId">
+          <TextField
+            defaultValue={massPostingData.group?.id}
+            margin="normal"
+            disabled
+            required
+            fullWidth
+            select
+            label="Group"
+            name="groupId"
+          >
             {groups.map(o => (
               <MenuItem key={o.id} value={o.id}>
                 {o.name}

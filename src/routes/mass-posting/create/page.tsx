@@ -64,7 +64,6 @@ const CreateMassPostingPage = () => {
             fileType: file.fileType,
             position: 1,
             privacyView: allPW,
-            fileName: file.fileName,
           },
         ],
         position: upItems.length + 1,
