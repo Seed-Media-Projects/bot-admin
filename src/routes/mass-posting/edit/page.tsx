@@ -23,7 +23,6 @@ const EditMassPostingPage = () => {
 
   useEffect(() => {
     if (massPostingData) {
-      console.debug(massPostingData);
       setItems(
         massPostingData.items.map(v => ({
           files: v.files.map(vf => ({

@@ -93,6 +93,18 @@ const router = createBrowserRouter([
         path: 'mass-posting/:id',
         lazy: () => import('@routes/mass-posting/edit'),
       },
+      {
+        path: 'posts-replace',
+        lazy: () => import('@routes/posts-replace'),
+      },
+      {
+        path: 'posts-replace/create',
+        lazy: () => import('@routes/posts-replace/create'),
+      },
+      {
+        path: 'posts-replace/:id',
+        lazy: () => import('@routes/posts-replace/edit'),
+      },
     ],
   },
   {

@@ -1,3 +1,4 @@
+import { AccountItem, getAccountsFX, VkTokenStatus } from '@core/accounts';
 import { LS, LSKeys } from '@core/local-store';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AdsClickIcon from '@mui/icons-material/AdsClick';
@@ -9,6 +10,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import MenuIcon from '@mui/icons-material/Menu';
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import PostAddIcon from '@mui/icons-material/PostAdd';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import {
   Alert,
   AppBar,
@@ -25,18 +27,38 @@ import {
   ListItemText,
   Snackbar,
   Toolbar,
+  Typography,
 } from '@mui/material';
 import { useUnit } from 'effector-react';
-import { useState } from 'react';
-import { LoaderFunctionArgs, Outlet, redirect, useFetcher, useNavigation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { LoaderFunctionArgs, Outlet, redirect, useFetcher, useLoaderData, useNavigation } from 'react-router-dom';
 import { $token } from '../core/login/store';
-import { $snacks, closeSnack } from '../core/snacks/store';
+import { $snacks, closeSnack, showSnack } from '../core/snacks/store';
+
 export const Component = () => {
+  const { accounts } = useLoaderData() as { accounts: AccountItem[] };
+
   const [open, setOpen] = useState(false);
   const hasToken = !!useUnit($token);
   const { snacks } = useUnit($snacks);
   const fetcher = useFetcher();
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const firstInactiveAccount = accounts.find(a => a.tokenStatus === VkTokenStatus.Inactive);
+    if (firstInactiveAccount) {
+      showSnack({
+        severity: 'warning',
+        message: (
+          <Box>
+            <Typography>Обнаружен неактивный токен. Необходимо заново добавить аккаунт.</Typography>
+            <Link href="/accounts">Перейти в акки</Link>
+          </Box>
+        ),
+        id: 'firstInactiveAccount',
+      });
+    }
+  }, [accounts]);
 
   const openMenu = () => {
     setOpen(true);
@@ -122,6 +144,16 @@ export const Component = () => {
                   </ListItemButton>
                 </ListItem>
               </Link>
+              <Link href="/posts-replace" sx={{ textDecoration: 'none', color: 'MenuText' }}>
+                <ListItem disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <PublishedWithChangesIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Замена постов" />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
               <Link href="/stories" sx={{ textDecoration: 'none', color: 'MenuText' }}>
                 <ListItem disablePadding>
                   <ListItemButton>
@@ -190,7 +222,7 @@ export const Component = () => {
       </Box>
       {snacks.map(snack => (
         <Snackbar
-          key={snack.message}
+          key={snack.id}
           open
           autoHideDuration={6000}
           onClose={() => closeSnack({ id: snack.id })}
@@ -212,11 +244,13 @@ export const Component = () => {
 
 Component.displayName = 'Root';
 
-export const loader = ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (!LS.getItem(LSKeys.AuthToken, '')) {
     const params = new URLSearchParams();
     params.set('from', new URL(request.url).pathname);
     return redirect('/login?' + params.toString());
   }
-  return null;
+
+  const accounts = await getAccountsFX();
+  return { accounts };
 };

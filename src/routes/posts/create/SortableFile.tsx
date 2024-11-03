@@ -9,10 +9,11 @@ import { privacyViewOptions } from '../constants';
 type Props = {
   fileInfo: FileInfo;
   setPostFiles: (value: SetStateAction<FileInfo[]>) => void;
+  disabled?: boolean;
 };
 
-export const SortableFile = ({ fileInfo, setPostFiles }: Props) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: fileInfo.id });
+export const SortableFile = ({ fileInfo, setPostFiles, disabled }: Props) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: fileInfo.id, disabled });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -96,6 +97,7 @@ export const SortableFile = ({ fileInfo, setPostFiles }: Props) => {
             select
             label="Кто видит"
             value={fileInfo.privacyView ?? 'all'}
+            disabled={disabled}
             onChange={e =>
               setPostFiles(f =>
                 f.map(all =>
@@ -123,6 +125,7 @@ export const SortableFile = ({ fileInfo, setPostFiles }: Props) => {
             await deleteFileFX(fileInfo.id);
             setPostFiles(f => f.filter(all => all.id !== fileInfo.id));
           }}
+          disabled={disabled}
         >
           <ClearIcon />
         </IconButton>
