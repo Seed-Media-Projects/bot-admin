@@ -81,6 +81,15 @@ const CreateReplacePostPage = () => {
       <Typography variant="h5" gutterBottom>
         Создание замены
       </Typography>
+      <Box my={2}>
+        {validLinks.map(link => {
+          return (
+            <Box key={link.value} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography>{link.value}</Typography>
+            </Box>
+          );
+        })}
+      </Box>
       <Form method="post" style={{ width: '100%' }}>
         <FormGroup>
           <FormControlLabel

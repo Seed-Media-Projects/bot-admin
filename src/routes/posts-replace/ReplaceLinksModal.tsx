@@ -3,7 +3,7 @@ import { useDebounce } from '@core/hooks/useDebounce';
 import { $replaceLinks, changeLinks } from '@core/replace-posts/store';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, CircularProgress, TextField, Typography } from '@mui/material';
 import { ActionModal } from '@ui/modal/ActionModal';
 import { useUnit } from 'effector-react';
 import { useEffect, useState } from 'react';
@@ -33,11 +33,13 @@ export const ReplaceLinksModal = ({ open, setOpen }: Props) => {
 const LinksForm = () => {
   const { links } = useUnit($replaceLinks);
   const [value, setValue] = useState('');
+  const [loading, setLoading] = useState(false);
   const { groups } = useLoaderData() as { groups: VkGroupItem[] };
 
   const debouncedLinks = useDebounce(value, 2500);
 
   useEffect(() => {
+    setLoading(true);
     const linksToParse = new Set(debouncedLinks.split('\n').filter(Boolean));
     const linksToState: typeof links = [];
     for (const linkToParse of linksToParse) {
@@ -51,6 +53,7 @@ const LinksForm = () => {
     }
 
     changeLinks(linksToState);
+    setLoading(false);
   }, [debouncedLinks, groups]);
 
   return (
@@ -65,6 +68,7 @@ const LinksForm = () => {
         value={value}
         onChange={e => setValue(e.target.value)}
       />
+      {loading && <CircularProgress />}
       <Box display="flex" gap={1} flexDirection="column">
         {links.map(vLink => (
           <Box key={vLink.value} display="flex" alignItems="center" gap={2}>
